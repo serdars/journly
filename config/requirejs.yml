@@ -1,0 +1,6 @@
+shim:
+  angular:
+    deps: [jquery]
+    exports: Angular
+paths:
+  angular: angular-1.0.8
