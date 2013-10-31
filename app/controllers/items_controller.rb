@@ -4,7 +4,7 @@ class ItemsController < ApplicationController
     respond_to do |format|
       format.html { raise "Oops"}
       format.json {
-        render :json => [ "Minikom", "Eux C", "Datca" ]
+        render :json => [ "Dinner in Grouchy Chef", "Boeing Factory Tour", "Sushi @ West Seattle" ]
       }
     end
   end
