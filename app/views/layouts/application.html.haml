@@ -1,10 +1,10 @@
 !!! 5
-%html
+%html{"ng-app" => "xplanApp"}
   %head
     %title
       X-Plan
-    = stylesheet_link_tag   "application", :media => "all"
-    = requirejs_include_tag "application"
+    = stylesheet_link_tag "application", :media => "all", "data-turbolinks-track" => true
+    = javascript_include_tag "application", "data-turbolinks-track" => true
     = csrf_meta_tags
-  %body
+  %body{"ng-controller" => "XplanAppCtrl"}
     = yield

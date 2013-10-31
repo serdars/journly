@@ -10,7 +10,6 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 1.2'
 
-gem 'requirejs-rails', git: 'git://github.com/jwhitley/requirejs-rails.git'
 gem 'haml'
 
 group :doc do
