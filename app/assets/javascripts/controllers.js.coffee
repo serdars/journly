@@ -1,14 +1,6 @@
-xplanApp = angular.module "xplanApp", [ ]
-
-xplanApp.directive 'eatClick', () ->
-    (scope, element, attrs) ->
-        $(element).click (event) ->
-            event.preventDefault();
-xplanApp.config [ "$httpProvider", (provider) ->
-    provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr 'content'
-    ]
+xplanControllers = angular.module "xplanControllers", [ ]
     
-xplanApp.controller "XplanAppCtrl", ($scope, $http) ->
+xplanControllers.controller "itemListController", ($scope, $http) ->
     $http.get('/plans/1/items').success (data) ->
         $scope.items = data
 
@@ -25,3 +17,6 @@ xplanApp.controller "XplanAppCtrl", ($scope, $http) ->
         .success (item) ->
             $scope.items.push item
             $('#addItemModal').modal "hide"
+
+xplanControllers.controller "itemCreationController", ($scope) ->
+    # For now nothing

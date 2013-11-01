@@ -1,0 +1,23 @@
+#addItemModal.modal.fade{"tabindex" => "-1", "role" => "dialog", "aria-labelledby" => "myModalLabel", "aria-hidden" => "true"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"type" => "button", "data-dismiss" => "modal", "aria-hidden" => "true"}
+          &times;
+        %h4.modal-title
+          Add new item to your plan
+      .modal-body
+        %form.form
+          .form-group
+            %label{"for" => "item_title"}
+              Title
+            %input#item_title.form-control{"type" => "text", "placeholder" => "Title", "ng-model" => "item_title"}
+          .form-group
+            %label{"for" => "item_details"}
+              Details
+            %textarea#item_details.form-control{"rows" => "5", "placeholder" => "Details", "ng-model" => "item_details"}
+      .modal-footer
+        %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
+          Close
+        %button.btn.btn-primary{"type" => "button", "ng-click" => "createItem()"}
+          Add
