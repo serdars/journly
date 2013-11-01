@@ -1,5 +1,5 @@
 Xplan::Application.routes.draw do
   root :to => "plans#index"
-  match 'plans/:plan_id/items' => 'items#show', :via => :get
-  match 'plans/:plan_id/items' => 'items#create', :via => :post
+  match 'items' => 'items#index', :via => :get
+  match 'items' => 'items#create', :via => :post
 end

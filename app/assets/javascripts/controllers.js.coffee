@@ -1,22 +1,20 @@
 xplanControllers = angular.module "xplanControllers", [ ]
     
-xplanControllers.controller "itemListController", ($scope, $http) ->
-    $http.get('/plans/1/items').success (data) ->
-        $scope.items = data
-
+xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->
+    $scope.items = XplanData.items
+    $scope.launchItemCreate = () ->
+        $rootScope.$broadcast 'item.create'
+]
+    
+xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->
     $('#addItemModal').modal
         show: false
 
-    $scope.launchItemCreate = () ->
+    $rootScope.$on "item.create", () ->
         $('#addItemModal').modal "show"
-
+    
     $scope.createItem = () ->
-        $http.post '/plans/1/items',
+        XplanData.createItem
             title: $scope.item_title
             details: $scope.item_details
-        .success (item) ->
-            $scope.items.push item
-            $('#addItemModal').modal "hide"
-
-xplanControllers.controller "itemCreationController", ($scope) ->
-    # For now nothing
+]

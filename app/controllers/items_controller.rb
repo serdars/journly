@@ -1,6 +1,6 @@
 class ItemsController < ApplicationController
-  # GET /plans/:plan_id/items
-  def show
+  # GET /items
+  def index
     respond_to do |format|
       format.html { raise "Oops"}
       format.json {
@@ -9,7 +9,7 @@ class ItemsController < ApplicationController
     end
   end
 
-  # POST /plans/:plan_id/items
+  # POST /items
   def create
     puts "Creating an item for #{params[:plan_id]} with title: #{params[:title]} \
 details: #{params[:details]}"
