@@ -11,13 +11,14 @@
           .form-group
             %label{"for" => "item_title"}
               Title
-            %input#item_title.form-control{"type" => "text", "placeholder" => "Title", "ng-model" => "item_title"}
+            %input#item_title.form-control{"type" => "text", "placeholder" => "Title", "ng-model" => "item_title", "value" => "{{ item.title }}"}
           .form-group
             %label{"for" => "item_details"}
               Details
             %textarea#item_details.form-control{"rows" => "5", "placeholder" => "Details", "ng-model" => "item_details"}
+              {{ item.details }}
       .modal-footer
         %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
           Close
-        %button.btn.btn-primary{"type" => "button", "ng-click" => "createItem()"}
-          Add
+        %button.btn.btn-primary{"type" => "button", "ng-click" => "submitItem()"}
+          {{ buttonMessage() }}

@@ -6,6 +6,8 @@
       {{item.details}}
     %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
       Delete
+    %a{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}
+      Edit
   %a.list-group-item.active{"href" => "#", "ng-click" => "launchItemCreate()", "eat-click" => ""}
     Add to the plan
 = render :partial => "items/creation_modal"

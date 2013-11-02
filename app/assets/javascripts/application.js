@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= require angular-1.0.8
-//= require angular-resource-1.0.8
+//= require angular-1.2.0-rc.3
+//= require angular-resource-1.2.0-rc.3
 //= require bootstrap-3.0.1
 //= require_tree .
