@@ -6,7 +6,8 @@ xplanServices.factory 'XplanData', [ '$resource',
         PlanItem = $resource '/items/:itemId', {
             itemId: '@id'
         }, {
-            get: {method:'GET', params:{itemId:'@id'}, isArray:true}
+            get: {method:'GET', params:{itemId:'@id'}, isArray:true},
+            delete: {method:'DELETE', params:{itemId:'@id'}}
         }
         
         dataService = { }
@@ -15,8 +16,19 @@ xplanServices.factory 'XplanData', [ '$resource',
             isArray: true
         
         dataService.createItem = (params) ->
-            item = PlanItem.save params
-            dataService.items.push item
+            PlanItem.save params, (item) ->
+                dataService.items.push item
+            , () ->
+                console.log "Failed to CREATE"
+            
+        dataService.deleteItem = (item) ->
+            item.$delete () ->
+                # Delete succeeded
+                index = dataService.items.indexOf item
+                dataService.items.splice index, 1
+            , () ->
+                # Delete failed
+                console.log "Failed to DELETE"
 
         dataService
 ]

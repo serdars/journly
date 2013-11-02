@@ -1,8 +1,11 @@
 .list-group{"ng-controller" => "itemListController"}
-  %a.list-group-item{"ng-repeat" => "item in items", "href" => "#"}
-    {{item.title}}
+  .list-group-item{"ng-repeat" => "item in items"}
+    %b
+      {{item.title}}
     %p
       {{item.details}}
+    %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
+      Delete
   %a.list-group-item.active{"href" => "#", "ng-click" => "launchItemCreate()", "eat-click" => ""}
     Add to the plan
 = render :partial => "items/creation_modal"

@@ -2,8 +2,12 @@ xplanControllers = angular.module "xplanControllers", [ ]
     
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->
     $scope.items = XplanData.items
+    
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create'
+
+    $scope.deleteItem = (item) ->
+        XplanData.deleteItem item
 ]
     
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->

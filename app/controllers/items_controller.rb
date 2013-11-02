@@ -18,11 +18,20 @@ details: #{params[:details]}"
       format.html { raise "Oops"}
       format.json {
         render :json => {
+          :id => 102,
           :title => params[:title],
           :details => params[:details]
         }
       }
     end
+  end
 
+  # DELETE /items/:id
+  def destroy
+    puts "Deleting item with id: #{params[:id]}"
+    respond_to do |format|
+      format.html { raise "Oops"}
+      format.json { head :no_content }
+    end
   end
 end
