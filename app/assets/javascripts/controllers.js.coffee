@@ -13,7 +13,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
         $rootScope.$broadcast 'item.edit', item
 ]
     
-xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->
+xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
     $('#addItemModal').modal
         show: false
 
@@ -24,6 +24,25 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     $rootScope.$on "item.edit", (event, item) ->
         $scope.item = item
         $('#addItemModal').modal "show"
+
+    isUrl = (value) ->
+        true
+
+    addAlert = (alertMessage) -> 
+        $scope.alerts.push alertMessage
+        $timeout () ->
+            index = $scope.alerts.indexOf alertMessage
+            $scope.alerts.splice index, 1
+        , 2000
+
+    addBookmark = (value) ->
+        addAlert "Added '" + value + "' as a bookmark..."
+        $scope.bookmarks.push value
+
+    $scope.magicInput = () ->
+        if isUrl($scope.magicValue)
+            addBookmark $scope.magicValue
+            $scope.magicValue = ""
     
     $scope.submitItem = () ->
         if $scope.item == null
@@ -40,4 +59,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             "Edit"
         else
             "Add"
+
+    $scope.bookmarks = [ ]
+    $scope.alerts = [ ]
 ]

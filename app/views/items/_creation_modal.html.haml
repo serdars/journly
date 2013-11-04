@@ -7,16 +7,24 @@
         %h4.modal-title
           Add new item to your plan
       .modal-body
+        %input#magic.form-control{"type" => "text", "placeholder" => "Magic Box", "ng-model" => "magicValue", "ng-change" => "magicInput()"}
+        .alert.alert-info.alert-dismissable{"ng-repeat" => "alert in alerts"}
+          %button.close{"type" => "button", "data-dismiss" => "alert", "aria-hidden" => "true"}
+            &times;
+          %strong
+            Magic Box:
+          {{ alert }}
+        %hr
         %form.form
           .form-group
-            %label{"for" => "item_title"}
-              Title
             %input#item_title.form-control{"type" => "text", "placeholder" => "Title", "ng-model" => "item_title", "value" => "{{ item.title }}"}
           .form-group
-            %label{"for" => "item_details"}
-              Details
             %textarea#item_details.form-control{"rows" => "5", "placeholder" => "Details", "ng-model" => "item_details"}
               {{ item.details }}
+        .input-group{"ng-repeat" => "bookmark in bookmarks"}
+          %span.input-group-addon
+            %i.fa.fa-fw.fa-bookmark
+          %input.form-control{"type" => "text", "value" => "{{bookmark}}"}
       .modal-footer
         %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
           Close
