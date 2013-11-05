@@ -1,7 +1,7 @@
 xplanServices = angular.module "xplanServices", [ 'ngResource' ]
 
-xplanServices.factory 'XplanData', [ '$resource',
-    ($resource) ->
+xplanServices.factory 'XplanData', [ '$resource', '$http',
+    ($resource, $http) ->
         # Resource service we are using to talk to the backend
         PlanItem = $resource '/items/:itemId.json', {
             itemId: '@id'
@@ -50,5 +50,12 @@ xplanServices.factory 'XplanData', [ '$resource',
                 # Delete failed
                 console.log "Failed to DELETE"
 
+        dataService.suggest = (params) ->
+            $http
+                method: 'GET'
+                url: "/suggest.json"
+                params: params
+                
+            
         dataService
 ]
