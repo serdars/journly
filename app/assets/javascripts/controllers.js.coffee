@@ -48,7 +48,11 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
 
     addTag = (value) ->
         addAlert "Added '" + value + "' as a tag..."
-        console.tag "Now I will add tag: " + value
+        $scope.tags.push value
+        
+    $scope.removeTag = (value) ->
+        index = $scope.tags.indexOf value
+        $scope.tags.splice index, 1
 
     addLocation = (value) ->
         addAlert "Added '" + value + "' as a location..."
@@ -101,4 +105,5 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
 
     $scope.bookmarks = [ ]
     $scope.alerts = [ ]
+    $scope.tags = [ ]
 ]

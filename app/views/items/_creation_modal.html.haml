@@ -20,6 +20,8 @@
             %span.input-group-addon
               %i.fa.fa-fw.fa-bookmark
             %input.form-control{"type" => "text", "value" => "{{bookmark}}"}
+          %xp-tag{"ng-repeat" => "tag in tags", "on-remove" => "removeTag(tag)"}
+            {{ tag }}
         #magic-actions.col-md-4
           .alert.alert-info.alert-dismissable{"ng-repeat" => "alert in alerts"}
             %button.close{"type" => "button", "data-dismiss" => "alert", "aria-hidden" => "true"}
