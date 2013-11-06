@@ -28,8 +28,8 @@
               Magic Box:
             {{ alert }}
           %suggestion-list
-            %suggestion-item{"ng-repeat" => "suggestion in suggestions"}
-              {{ suggestion.value }}
+            %suggestion-item{"ng-repeat" => "suggestion in suggestions", "on-select" => "suggested(suggestion)"}
+              {{ suggestion.message }}
       .modal-footer
         %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
           Close

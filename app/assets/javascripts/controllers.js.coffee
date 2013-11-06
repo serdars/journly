@@ -46,11 +46,26 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         addAlert "Added '" + value + "' as a bookmark..."
         $scope.bookmarks.push value
 
+    addTag = (value) ->
+        addAlert "Added '" + value + "' as a tag..."
+        console.tag "Now I will add tag: " + value
+
+    addLocation = (value) ->
+        addAlert "Added '" + value + "' as a location..."
+        console.tag "Now I will add location: " + value
+
+    resetSuggestions = () ->
+        $scope.suggestions = [ ]
+        $scope.magicValue = ""
+
     $scope.magicInput = () ->
-        if isUrl($scope.magicValue)
+        if $scope.magicValue == ""
+            # If the input is empty, reset the suggestions.
+            resetSuggestions()
+        else if isUrl($scope.magicValue)
             # If we have a URL add it as a bookmark
             addBookmark $scope.magicValue
-            $scope.magicValue = ""
+            resetSuggestions()
         else
             # Otherwise get suggestions from the server
             XplanData.suggest
@@ -58,7 +73,15 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             .then (response) ->
                 $scope.suggestions = [ ]
                 angular.forEach response.data.suggestions, (suggestion) ->
+                    suggestion.message = "Add " + suggestion.type + ": " + suggestion.value
                     $scope.suggestions.push suggestion
+
+    $scope.suggested = (suggestion) ->
+        resetSuggestions()
+        if suggestion.type == "tag"
+            addTag suggestion.value
+        else if suggestion.type == "location"
+            addLocation suggestion.value        
     
     $scope.submitItem = () ->
         if $scope.item == null
