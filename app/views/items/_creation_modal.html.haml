@@ -27,8 +27,8 @@
             %strong
               Magic Box:
             {{ alert }}
-          .list-group
-            .list-group-item{"ng-repeat" => "suggestion in suggestions"}
+          %suggestion-list
+            %suggestion-item{"ng-repeat" => "suggestion in suggestions"}
               {{ suggestion.value }}
       .modal-footer
         %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
