@@ -38,18 +38,22 @@ details: #{params[:details]}"
   # GET /suggest
   def suggest
     suggestions = [ ]
-    suggestions << {
-      :type => "tag",
-      :value => "food"
-    }
-    suggestions << {
-      :type => "tag",
-      :value => "restaurant"
-    }
-    suggestions << {
-      :type => "location",
-      :value => "Metropolitan Market"
-    }
+
+    case params[:type]
+    when "tag"
+      suggestions << {
+        :type => "tag",
+        :value => "food"
+      }
+      suggestions << {
+        :type => "tag",
+        :value => "restaurant"
+      }
+    when "location"
+      suggestions = GooglePlace.suggest(params[:term])
+    else
+      raise "Unknown suggestion type..."
+    end
 
     respond_to do |format|
       format.html { raise "Oops"}

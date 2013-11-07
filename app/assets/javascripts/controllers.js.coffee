@@ -25,6 +25,12 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         $scope.item = item
         $('#addItemModal').modal "show"
 
+    timer = null
+    debounce = (fn, delay) ->
+        if timer != null
+            $timeout.cancel timer
+        timer = $timeout fn, delay
+
     isUrl = (value) ->
         # http://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-an-url
         pattern = new RegExp '^(https?:\\/\\/)?' +
@@ -35,11 +41,14 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             '(\\#[-a-z\\d_]*)?$','i'
         pattern.test value
 
+    deleteElement = (array, element) ->
+        index = array.indexOf element
+        array.splice index, 1
+    
     addAlert = (alertMessage) -> 
         $scope.alerts.push alertMessage
         $timeout () ->
-            index = $scope.alerts.indexOf alertMessage
-            $scope.alerts.splice index, 1
+            deleteElement $scope.alerts, alertMessage
         , 5000
 
     addBookmark = (value) ->
@@ -51,8 +60,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         $scope.tags.push value
         
     $scope.removeTag = (value) ->
-        index = $scope.tags.indexOf value
-        $scope.tags.splice index, 1
+        deleteElement $scope.tags, value
 
     addLocation = (value) ->
         addAlert "Added '" + value + "' as a location..."
@@ -62,23 +70,40 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         $scope.suggestions = [ ]
         $scope.magicValue = ""
 
-    $scope.magicInput = () ->
-        if $scope.magicValue == ""
-            # If the input is empty, reset the suggestions.
-            resetSuggestions()
-        else if isUrl($scope.magicValue)
-            # If we have a URL add it as a bookmark
-            addBookmark $scope.magicValue
-            resetSuggestions()
-        else
-            # Otherwise get suggestions from the server
-            XplanData.suggest
-                term: $scope.magicValue
-            .then (response) ->
-                $scope.suggestions = [ ]
+    suggestionQueryCount = 0
+    getSuggestions = (type, term) ->
+        $scope.suggestionCount += 1
+        # Get tag suggestions
+        suggestionQueryCount += 1
+        queryNumber = suggestionQueryCount
+        XplanData.suggest
+            term: term
+            type: type
+        .then (response) ->
+            $scope.suggestionCount -= 1
+            # Since we are executing two queries we are
+            # letting the the query number to be  1 higher
+            # than overall query count
+            if queryNumber >= suggestionQueryCount - 1
                 angular.forEach response.data.suggestions, (suggestion) ->
                     suggestion.message = "Add " + suggestion.type + ": " + suggestion.value
                     $scope.suggestions.push suggestion
+
+    $scope.magicInput = () ->
+        debounce () ->
+            if $scope.magicValue == ""
+                # If the input is empty, reset the suggestions.
+                resetSuggestions()
+            else if isUrl $scope.magicValue
+                # If we have a URL add it as a bookmark
+                addBookmark $scope.magicValue
+                resetSuggestions()
+            else
+                # Otherwise get suggestions from the server
+                $scope.suggestions = [ ]
+                getSuggestions "tag", $scope.magicValue
+                getSuggestions "location", $scope.magicValue
+        , 500
 
     $scope.suggested = (suggestion) ->
         resetSuggestions()
@@ -106,4 +131,6 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     $scope.bookmarks = [ ]
     $scope.alerts = [ ]
     $scope.tags = [ ]
+    $scope.suggestions = [ ]
+    $scope.suggestionCount = 0
 ]

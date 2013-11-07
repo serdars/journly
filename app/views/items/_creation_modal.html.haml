@@ -30,6 +30,10 @@
               Magic Box:
             {{ alert }}
           %suggestion-list
+            .list-group-item{"ng-show" => "suggestionCount > 0"}
+              %span
+                %i.fa.fa-spinner.fa-spin
+              Asking for suggestions...
             %suggestion-item{"ng-repeat" => "suggestion in suggestions", "on-select" => "suggested(suggestion)"}
               {{ suggestion.message }}
       .modal-footer
