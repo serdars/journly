@@ -52,7 +52,7 @@ details: #{params[:details]}"
     when "location"
       suggestions = GooglePlace.suggest(params[:term])
     else
-      raise "Unknown suggestion type..."
+      raise "Unknown suggestion type during suggest..."
     end
 
     respond_to do |format|
@@ -62,4 +62,23 @@ details: #{params[:details]}"
       }
     end
   end
+
+  # GET /info
+  def info
+    info = [ ]
+    case params[:type]
+    when "location"
+      info = GooglePlace.info(params[:key])
+    else
+      raise "Unknown suggestion type during info..."
+    end
+
+    respond_to do |format|
+      format.html { raise "Oops"}
+      format.json {
+        render :json => { :info => info }
+      }
+    end
+  end
+
 end

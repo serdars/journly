@@ -62,9 +62,13 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     $scope.removeTag = (value) ->
         deleteElement $scope.tags, value
 
-    addLocation = (value) ->
-        addAlert "Added '" + value + "' as a location..."
-        console.tag "Now I will add location: " + value
+    addLocation = (location) ->
+        XplanData.info
+            type: "location"
+            key: location.reference
+        .then (response) ->
+            console.log "Adding objects yay..."
+            addAlert "Added '" + location.value + "' as a location..."
 
     resetSuggestions = () ->
         $scope.suggestions = [ ]
@@ -110,7 +114,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         if suggestion.type == "tag"
             addTag suggestion.value
         else if suggestion.type == "location"
-            addLocation suggestion.value        
+            addLocation suggestion
     
     $scope.submitItem = () ->
         if $scope.item == null

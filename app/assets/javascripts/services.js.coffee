@@ -55,7 +55,12 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
                 method: 'GET'
                 url: "/suggest.json"
                 params: params
+
+        dataService.info = (params) ->
+            $http
+                method: 'GET'
+                url: "/info.json"
+                params: params
                 
-            
         dataService
 ]

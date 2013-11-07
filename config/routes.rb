@@ -4,4 +4,5 @@ Xplan::Application.routes.draw do
   match 'items' => 'items#create', :via => :post
   match 'items/:id' => 'items#destroy', :via => :delete
   match 'suggest' => 'items#suggest', :via => :get
+  match 'info' => 'items#info', :via => :get
 end
