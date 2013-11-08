@@ -67,8 +67,11 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             type: "location"
             key: location.reference
         .then (response) ->
-            console.log "Adding objects yay..."
-            addAlert "Added '" + location.value + "' as a location..."
+            $scope.locations.push response.data.info
+            addAlert "Added '" + response.data.info.name + "' as a location..."
+
+    $scope.removeLocation = (value) ->
+        deleteElement $scope.locations, value
 
     resetSuggestions = () ->
         $scope.suggestions = [ ]
@@ -135,6 +138,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     $scope.bookmarks = [ ]
     $scope.alerts = [ ]
     $scope.tags = [ ]
+    $scope.locations = [ ]
     $scope.suggestions = [ ]
     $scope.suggestionCount = 0
 ]
