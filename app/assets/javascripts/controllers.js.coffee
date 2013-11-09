@@ -55,6 +55,9 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         addAlert "Added '" + value + "' as a bookmark..."
         $scope.bookmarks.push value
 
+    $scope.removeBookmark = (value) ->
+        deleteElement $scope.bookmarks, value
+
     addTag = (value) ->
         addAlert "Added '" + value + "' as a tag..."
         $scope.tags.push value

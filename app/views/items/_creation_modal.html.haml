@@ -3,7 +3,7 @@
     .modal-content
       .modal-header
         %button.close{"type" => "button", "data-dismiss" => "modal", "aria-hidden" => "true"}
-          &times;
+          %i.fa.fa-times
         %h4.modal-title
           Add new item to your plan
       .modal-body.row
@@ -23,9 +23,11 @@
             %span.input-group-addon
               %i.fa.fa-fw.fa-bookmark
             %input.form-control{"type" => "text", "value" => "{{bookmark}}"}
+            %button.close{"type" => "button", "aria-hidden" => "true", "ng-click" => "removeBookmark(bookmark)"}
+              %i.fa.fa-times
           .location.well.well-sm{"ng-repeat" => "location in locations"}
             %button.close{"type" => "button", "aria-hidden" => "true", "ng-click" => "removeLocation(location)"}
-              &times;
+              %i.fa.fa-times
             %h4
               {{location.name}}
             %ul.list-unstyled
@@ -39,7 +41,7 @@
         #magic-actions.col-md-4
           .alert.alert-info.alert-dismissable{"ng-repeat" => "alert in alerts"}
             %button.close{"type" => "button", "data-dismiss" => "alert", "aria-hidden" => "true"}
-              &times;
+              %i.fa.fa-times
             %strong
               Magic Box:
             {{ alert }}
