@@ -8,6 +8,7 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
         }, {
             get: {method:'GET', params:{itemId:'@id'}, isArray:true},
             delete: {method:'DELETE', params:{itemId:'@id'}}
+            save: {method:'POST', params:{itemId:'@id'}}
         }
         
         dataService = { }
@@ -22,23 +23,12 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
                 console.log "Failed to CREATE"
 
         dataService.editItem = (item, params) ->
-            changedParams = { }
-            objectChanged = false
-            angular.forEach params, (value, key) ->
-                if item[key] != value
-                    objectChanged = true
+            PlanItem.save params, (newItem) ->
+                angular.forEach params, (value, key) ->
                     this[key] = value
-            , changedParams
-
-            if objectChanged
-                PlanItem.save changedParams, (newItem) ->
-                    angular.forEach changedParams, (value, key) ->
-                        this[key] = value
-                    , item
-                , () ->
-                    console.log "Failed to EDIT"
-            else
-                console.log "Nothing to EDIT"
+                , item
+            , () ->
+                console.log "Failed to EDIT"
 
         dataService.deleteItem = (item) ->
             item.$delete()

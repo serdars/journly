@@ -14,15 +14,34 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
 ]
     
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
+    initModal = () ->
+        $scope.bookmarks = [ ]
+        $scope.alerts = [ ]
+        $scope.tags = [ ]
+        $scope.locations = [ ]
+        $scope.suggestions = [ ]
+        $scope.yelpInfos = [ ]
+        $scope.suggestionCount = 0
+        if $scope.item != null
+            $scope.item_details = $scope.item.details
+            $scope.item_title = $scope.item.title
+        else
+            $scope.item_details = ""
+            $scope.item_title = ""
+
     $('#addItemModal').modal
         show: false
-
+    $('#addItemModal').on "hidden.bs.modal", () ->
+        initModal()
+        
     $rootScope.$on "item.create", () ->
         $scope.item = null
+        initModal()
         $('#addItemModal').modal "show"
 
     $rootScope.$on "item.edit", (event, item) ->
         $scope.item = item
+        initModal()
         $('#addItemModal').modal "show"
 
     timer = null
@@ -146,14 +165,25 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             addLocation suggestion
     
     $scope.submitItem = () ->
+        item_data = 
+            title: $scope.item_title
+            details: $scope.item_details
+        
         if $scope.item == null
-            XplanData.createItem
+            item = XplanData.createItem
                 title: $scope.item_title
                 details: $scope.item_details
+            item.$promise.then () ->
+                console.log "something"
+                $('#addItemModal').modal "hide"                
         else
-            XplanData.editItem $scope.item,
+            item = XplanData.editItem $scope.item,
+                id: $scope.item.id
                 title: $scope.item_title
                 details: $scope.item_details
+            item.$promise.then () ->
+                console.log "something"
+                $('#addItemModal').modal "hide"                
 
     $scope.buttonMessage = () ->
         if $scope.item != null
@@ -161,22 +191,6 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         else
             "Add"
 
-    $scope.itemTitle = () ->
-        if $scope.item_title != null
-            $scope.item_title
-        else
-            if $scope.item != null
-                $scope.item.title
-            else
-                ""
-
-    $scope.bookmarks = [ ]
-    $scope.alerts = [ ]
-    $scope.tags = [ ]
-    $scope.locations = [ ]
-    $scope.suggestions = [ ]
-    $scope.yelpInfos = [ ]
-    $scope.suggestionCount = 0
-    $scope.item_title = null
     $scope.item = null
+    initModal()
 ]

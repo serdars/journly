@@ -3,32 +3,42 @@ class ItemsController < ApplicationController
   def index
     respond_to do |format|
       format.html { raise "Oops"}
-      format.json {
-        render :json => [ ]
-      }
+      format.json { render :json => Item.all }
     end
   end
 
   # POST /items
   def create
-    puts "Creating an item for #{params[:plan_id]} with title: #{params[:title]} \
-details: #{params[:details]}"
-
+    @item = Item.create({
+      :title => params[:title],
+      :details => params[:details]
+    })
+                          
     respond_to do |format|
       format.html { raise "Oops"}
-      format.json {
-        render :json => {
-          :id => 102,
-          :title => params[:title],
-          :details => params[:details]
-        }
-      }
+      format.json { render :json => @item }
+    end
+  end
+
+  # POST /items/:id
+  def update
+    @item = Item.find(params[:id])
+    
+    @item.update({
+      :title => params[:title],
+      :details => params[:details]
+    })
+                          
+    respond_to do |format|
+      format.html { raise "Oops"}
+      format.json { render :json => @item }
     end
   end
 
   # DELETE /items/:id
   def destroy
-    puts "Deleting item with id: #{params[:id]}"
+    Item.find(params[:id]).destroy
+    
     respond_to do |format|
       format.html { raise "Oops"}
       format.json { head :no_content }
