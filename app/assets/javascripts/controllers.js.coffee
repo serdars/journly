@@ -62,12 +62,14 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         .then (response) ->
             $scope.suggestionCount -= 1
             angular.forEach response.data.info, (info) ->
-                if info.type == "title"  
+                if info.type == "name"
                     $scope.item_title = info.value
                     addAlert "Added '" + info.value + "' as the title..."
                 if info.type == "yelp"
                     $scope.yelpInfos.push info.value
                     addAlert "Added Yelp info for '" + info.value.name + "'"
+                    $scope.item_title = info.value.name
+                    addAlert "Added '" + info.value.name + "' as the title..."
             
     $scope.removeBookmark = (value) ->
         deleteElement $scope.bookmarks, value
@@ -80,7 +82,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         deleteElement $scope.tags, value
 
     addLocation = (location) ->
-        $scope.processing_message = "Looking up info for" + location.value + " ..."
+        $scope.processing_message = "Looking up info for " + location.value + " ..."
         $scope.suggestionCount += 1
         XplanData.info
             type: "location"

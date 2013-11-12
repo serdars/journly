@@ -1,5 +1,5 @@
+require 'open-uri'
 require 'uri'
-require 'pry'
 
 class Bookmark
   def self.test
@@ -14,19 +14,22 @@ class Bookmark
       puts self.info(test)
     end
   end
-  
+
   def self.info(url)
     info = [ ]
-    # TODO: Get title from url
-    info << {:type => "title", :value => "Title of Your URL"}
-
     yelp_biz_id = self.extract_yelp_biz_id(url)
     if yelp_biz_id
+      yelp_info = Yelp.info(yelp_biz_id)
       info << {
         :type => "yelp",
-        :value => Yelp.info(yelp_biz_id)
+        :value => yelp_info
       }
+
+      return info
     end
+
+    title = self.get_title_from_url(url)
+    info << {:type => "name", :value => title} if title
 
     info
   end
@@ -53,6 +56,19 @@ class Bookmark
     end
 
     business_id
+  end
+
+  def self.get_title_from_url(url)
+    title = nil
+
+    begin
+      source = open(url) {|f| f.read}
+    rescue Exception => e
+      Rails.logger.error "Can not get information from #{url}. Error: #{e.inspect}"
+      return title
+    end
+
+    source.match(/<title>(.*)<\/title>/)[1]
   end
 
 end
