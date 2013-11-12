@@ -33,10 +33,6 @@ class GooglePlace
   #
   # Internal methods
   #
-  def self.local_mode
-    false
-  end
-
   def self.autocomplete(parameters)
     # Add google api key
     Rails.logger.debug "Google Autocomplete Call with: #{parameters}"
@@ -77,7 +73,7 @@ class GooglePlace
 
 
   def self.fetch_rest(uri)
-    if local_mode
+    if APP_CONFIG[:LOCAL_MODE]
       return 200, fetch_local(uri)
     end
 

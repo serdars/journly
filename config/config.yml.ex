@@ -1,10 +1,12 @@
 development:
-  GOOGLE_PLACES_API_KEY: "your_key"
-  FSQ_CLIENT_ID: "your_key"
-  FSQ_CLIENT_SECRET: "your_key"
+  GOOGLE_PLACES_API_KEY: ""
+  FSQ_CLIENT_ID: ""
+  FSQ_CLIENT_SECRET: ""
+  YELP_CONSUMER_KEY: ""
+  YELP_CONSUMER_SECRET: ""
+  YELP_TOKEN: ""
+  YELP_TOKEN_SECRET: ""
 
 test:
-  GOOGLE_PLACES_API_KEY: "your_key"
 
 production:
-  GOOGLE_PLACES_API_KEY: "your_key"

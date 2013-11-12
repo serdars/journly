@@ -69,6 +69,8 @@ details: #{params[:details]}"
     case params[:type]
     when "location"
       info = GooglePlace.info(params[:key])
+    when "bookmark"
+      info = Bookmark.info(params[:key])
     else
       raise "Unknown suggestion type during info..."
     end

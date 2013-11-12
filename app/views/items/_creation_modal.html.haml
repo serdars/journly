@@ -12,7 +12,7 @@
           %hr
           %form.form
             .form-group
-              %input#item_title.form-control{"type" => "text", "placeholder" => "Title", "ng-model" => "item_title", "value" => "{{ item.title }}"}
+              %input#item_title.form-control{"type" => "text", "placeholder" => "Title", "ng-model" => "item_title", "value" => "{{ itemTitle() }}"}
             .form-group
               %textarea#item_details.form-control{"rows" => "5", "placeholder" => "Details", "ng-model" => "item_details"}
                 {{ item.details }}
@@ -38,6 +38,19 @@
               %li
                 %a{"href" => "{{location.url}}", "target" => "_blank"}
                   Website
+          .yelp-info.well.well-sm{"ng-repeat" => "yelpInfo in yelpInfos"}
+            %button.close{"type" => "button", "aria-hidden" => "true", "ng-click" => "removeYelpInfo(yelpInfo)"}
+              %i.fa.fa-times
+            %h4
+              {{yelpInfo.name}}
+            %ul.list-unstyled
+              %li
+                Rating: {{yelpInfo.rating}} from {{yelpInfo.review_count}} reviews
+              %li
+                {{yelpInfo.phone}}
+              %li
+                %a{"href" => "{{yelpInfo.url}}", "target" => "_blank"}
+                  Check it out on Yelp
         #magic-actions.col-md-4
           .alert.alert-info.alert-dismissable{"ng-repeat" => "alert in alerts"}
             %button.close{"type" => "button", "data-dismiss" => "alert", "aria-hidden" => "true"}
@@ -49,7 +62,7 @@
             .list-group-item{"ng-show" => "suggestionCount > 0"}
               %span
                 %i.fa.fa-spinner.fa-spin
-              Asking for suggestions...
+              {{processing_message}}
             %suggestion-item{"ng-repeat" => "suggestion in suggestions", "on-select" => "suggested(suggestion)"}
               {{ suggestion.message }}
       .modal-footer

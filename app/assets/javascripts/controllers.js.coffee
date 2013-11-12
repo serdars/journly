@@ -52,9 +52,23 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         , 5000
 
     addBookmark = (value) ->
-        addAlert "Added '" + value + "' as a bookmark..."
         $scope.bookmarks.push value
-
+        addAlert "Added '" + value + "' as a bookmark..."
+        $scope.processing_message = "Looking up " + value + " ..."
+        $scope.suggestionCount += 1
+        XplanData.info
+            type: "bookmark"
+            key: value
+        .then (response) ->
+            $scope.suggestionCount -= 1
+            angular.forEach response.data.info, (info) ->
+                if info.type == "title"  
+                    $scope.item_title = info.value
+                    addAlert "Added '" + info.value + "' as the title..."
+                if info.type == "yelp"
+                    $scope.yelpInfos.push info.value
+                    addAlert "Added Yelp info for '" + info.value.name + "'"
+            
     $scope.removeBookmark = (value) ->
         deleteElement $scope.bookmarks, value
 
@@ -66,15 +80,21 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         deleteElement $scope.tags, value
 
     addLocation = (location) ->
+        $scope.processing_message = "Looking up info for" + location.value + " ..."
+        $scope.suggestionCount += 1
         XplanData.info
             type: "location"
             key: location.reference
         .then (response) ->
+            $scope.suggestionCount -= 1
             $scope.locations.push response.data.info
             addAlert "Added '" + response.data.info.name + "' as a location..."
 
     $scope.removeLocation = (value) ->
         deleteElement $scope.locations, value
+
+    $scope.removeYelpInfo = (value) ->
+        deleteElement $scope.yelpInfos, value
 
     resetSuggestions = () ->
         $scope.suggestions = [ ]
@@ -82,6 +102,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
 
     suggestionQueryCount = 0
     getSuggestions = (type, term) ->
+        $scope.processing_message = "Searching for suggestions"
         $scope.suggestionCount += 1
         # Get tag suggestions
         suggestionQueryCount += 1
@@ -138,10 +159,22 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         else
             "Add"
 
+    $scope.itemTitle = () ->
+        if $scope.item_title != null
+            $scope.item_title
+        else
+            if $scope.item != null
+                $scope.item.title
+            else
+                ""
+
     $scope.bookmarks = [ ]
     $scope.alerts = [ ]
     $scope.tags = [ ]
     $scope.locations = [ ]
     $scope.suggestions = [ ]
+    $scope.yelpInfos = [ ]
     $scope.suggestionCount = 0
+    $scope.item_title = null
+    $scope.item = null
 ]
