@@ -9,10 +9,23 @@ class ItemsController < ApplicationController
 
   # POST /items
   def create
+    @tags = [ ]
+    
+    if params[:tags] && !params[:tags].empty?
+      params[:tags].each do |tag|
+        if tag[:id]
+          @tags << Tag.find(tag[:id])
+        else
+          @tags << Tag.create(:name => tag[:name])
+        end
+      end
+    end
+    
     @item = Item.create({
-      :title => params[:title],
-      :details => params[:details]
-    })
+                        :title => params[:title],
+                        :details => params[:details],
+                        :tags => @tags
+                        })
                           
     respond_to do |format|
       format.html { raise "Oops"}
@@ -22,12 +35,24 @@ class ItemsController < ApplicationController
 
   # POST /items/:id
   def update
-    @item = Item.find(params[:id])
+    @tags = [ ]
     
+    if params[:tags] && !params[:tags].empty?
+      params[:tags].each do |tag|
+        if tag[:id]
+          @tags << Tag.find(tag[:id])
+        else
+          @tags << Tag.create(:name => tag[:name])
+        end
+      end
+    end
+
+    @item = Item.find(params[:id])
     @item.update({
-      :title => params[:title],
-      :details => params[:details]
-    })
+                   :title => params[:title],
+                   :details => params[:details],
+                   :tags => @tags
+                 })
                           
     respond_to do |format|
       format.html { raise "Oops"}
@@ -49,26 +74,24 @@ class ItemsController < ApplicationController
   def suggest
     suggestions = [ ]
 
-    case params[:type]
-    when "tag"
-      suggestions << {
-        :type => "tag",
-        :value => "food"
-      }
-      suggestions << {
-        :type => "tag",
-        :value => "restaurant"
-      }
-    when "location"
-      suggestions = GooglePlace.suggest(params[:term])
-    else
-      raise "Unknown suggestion type during suggest..."
-    end
+    suggestionClass = case params[:type]
+                      when "tag"
+                        Tag
+                      when "location"
+                        GooglePlace
+                      else
+                        raise "Unknown suggestion type during suggest..."
+                      end
+    
+    suggestions = suggestionClass.suggest(params[:term])
 
     respond_to do |format|
       format.html { raise "Oops"}
       format.json {
-        render :json => { :suggestions => suggestions }
+        render :json => {
+          :suggestion_type => params[:type],
+          :suggestions => suggestions
+        }
       }
     end
   end

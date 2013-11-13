@@ -3,6 +3,8 @@ class AddItems < ActiveRecord::Migration
     create_table :items do |t|
       t.string :title
       t.text :details
+
+      t.timestamps
     end
   end
 end

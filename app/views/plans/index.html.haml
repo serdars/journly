@@ -4,6 +4,10 @@
       {{item.title}}
     %p
       {{item.details}}
+    %p
+      Tags:
+      %b{"ng-repeat" => "tag in item.tags"}
+        {{tag.name}},
     %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
       Delete
     %a{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}

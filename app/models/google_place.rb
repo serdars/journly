@@ -8,7 +8,6 @@ class GooglePlace
     response = self.autocomplete({:input => term})
     response["predictions"].each do |s|
       suggestions << {
-        :type => "location",
         :value => s["description"],
         :reference => s["reference"]
       }

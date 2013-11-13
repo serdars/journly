@@ -16,7 +16,7 @@
             .form-group
               %textarea#item_details.form-control{"rows" => "5", "placeholder" => "Details", "ng-model" => "item_details"}
           %xp-tag{"ng-repeat" => "tag in tags", "on-remove" => "removeTag(tag)"}
-            {{ tag }}
+            {{ tag.name }}
           .clearfix
           .bookmark.input-group{"ng-repeat" => "bookmark in bookmarks"}
             %span.input-group-addon

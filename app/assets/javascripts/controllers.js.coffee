@@ -17,7 +17,6 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     initModal = () ->
         $scope.bookmarks = [ ]
         $scope.alerts = [ ]
-        $scope.tags = [ ]
         $scope.locations = [ ]
         $scope.suggestions = [ ]
         $scope.yelpInfos = [ ]
@@ -25,7 +24,9 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         if $scope.item != null
             $scope.item_details = $scope.item.details
             $scope.item_title = $scope.item.title
+            $scope.tags = $scope.item.tags
         else
+            $scope.tags = [ ]
             $scope.item_details = ""
             $scope.item_title = ""
 
@@ -93,12 +94,12 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     $scope.removeBookmark = (value) ->
         deleteElement $scope.bookmarks, value
 
-    addTag = (value) ->
-        addAlert "Added '" + value + "' as a tag..."
-        $scope.tags.push value
+    addTag = (tag) ->
+        addAlert "Added '" + tag.name + "' as a tag..."
+        $scope.tags.push tag
         
-    $scope.removeTag = (value) ->
-        deleteElement $scope.tags, value
+    $scope.removeTag = (tag) ->
+        deleteElement $scope.tags, tag
 
     addLocation = (location) ->
         $scope.processing_message = "Looking up info for " + location.value + " ..."
@@ -137,8 +138,14 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             # letting the the query number to be  1 higher
             # than overall query count
             if queryNumber >= suggestionQueryCount - 1
-                angular.forEach response.data.suggestions, (suggestion) ->
-                    suggestion.message = "Add " + suggestion.type + ": " + suggestion.value
+                angular.forEach response.data.suggestions, (suggestion_data) ->
+                    suggestion = { }
+                    suggestion.type = response.data.suggestion_type
+                    suggestion.data = suggestion_data
+                    if response.data.suggestion_type == "tag"
+                        suggestion.message = "Add tag: " + suggestion_data.name
+                    else if response.data.suggestion_type == "location"
+                        suggestion.message = "Add location: " + suggestion_data.value
                     $scope.suggestions.push suggestion
 
     $scope.magicInput = () ->
@@ -160,29 +167,25 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     $scope.suggested = (suggestion) ->
         resetSuggestions()
         if suggestion.type == "tag"
-            addTag suggestion.value
+            addTag suggestion.data
         else if suggestion.type == "location"
-            addLocation suggestion
+            addLocation suggestion.data
     
     $scope.submitItem = () ->
-        item_data = 
-            title: $scope.item_title
-            details: $scope.item_details
-        
         if $scope.item == null
             item = XplanData.createItem
                 title: $scope.item_title
                 details: $scope.item_details
+                tags: $scope.tags
             item.$promise.then () ->
-                console.log "something"
                 $('#addItemModal').modal "hide"                
         else
             item = XplanData.editItem $scope.item,
                 id: $scope.item.id
                 title: $scope.item_title
                 details: $scope.item_details
+                tags: $scope.tags
             item.$promise.then () ->
-                console.log "something"
                 $('#addItemModal').modal "hide"                
 
     $scope.buttonMessage = () ->
