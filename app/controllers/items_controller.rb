@@ -9,22 +9,14 @@ class ItemsController < ApplicationController
 
   # POST /items
   def create
-    @tags = [ ]
-    
-    if params[:tags] && !params[:tags].empty?
-      params[:tags].each do |tag|
-        if tag[:id]
-          @tags << Tag.find(tag[:id])
-        else
-          @tags << Tag.create(:name => tag[:name])
-        end
-      end
-    end
+    prepare_tags
+    prepare_item_elements
     
     @item = Item.create({
-                        :title => params[:title],
-                        :details => params[:details],
-                        :tags => @tags
+                          :title => params[:title],
+                          :details => params[:details],
+                          :tags => @tags,
+                          :item_elements => @item_elements
                         })
                           
     respond_to do |format|
@@ -35,23 +27,15 @@ class ItemsController < ApplicationController
 
   # POST /items/:id
   def update
-    @tags = [ ]
-    
-    if params[:tags] && !params[:tags].empty?
-      params[:tags].each do |tag|
-        if tag[:id]
-          @tags << Tag.find(tag[:id])
-        else
-          @tags << Tag.create(:name => tag[:name])
-        end
-      end
-    end
+    prepare_tags
+    prepare_item_elements
 
     @item = Item.find(params[:id])
     @item.update({
                    :title => params[:title],
                    :details => params[:details],
-                   :tags => @tags
+                   :tags => @tags,
+                   :item_elements => @item_elements
                  })
                           
     respond_to do |format|
@@ -113,6 +97,35 @@ class ItemsController < ApplicationController
       format.json {
         render :json => { :info => info }
       }
+    end
+  end
+
+  def prepare_tags
+    @tags = [ ]
+    
+    if params[:tags] && !params[:tags].empty?
+      params[:tags].each do |tag|
+        if tag[:id]
+          @tags << Tag.find(tag[:id])
+        else
+          @tags << Tag.create(:name => tag[:name])
+        end
+      end
+    end
+  end
+
+  def prepare_item_elements
+    @item_elements = [ ]
+    
+    if params[:item_elements] && !params[:item_elements].empty?
+      params[:item_elements].each do |element|
+        if element[:id]
+          @item_elements << ItemElement.find(element[:id])
+        else
+          raise "Not implemented yet..."
+          @item_elements << ItemElement.create(:name => element[:name])
+        end
+      end
     end
   end
 

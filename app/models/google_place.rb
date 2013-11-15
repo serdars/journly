@@ -20,13 +20,7 @@ class GooglePlace
     response = nil
 
     response = self.place_detail({:reference => reference})
-    {
-      :name => response['result']['name'],
-      :address => response['result']['formatted_address'],
-      :url => response['result']['url'],
-      :geometry => response['result']['geometry']['location'],
-      :phone_number => response['result']['formatted_phone_number']
-    }
+    ItemElement.create_google_place(response['result'])
   end
 
   #

@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131113055039) do
+ActiveRecord::Schema.define(version: 20131114080901) do
+
+  create_table "item_elements", force: true do |t|
+    t.string  "element_type"
+    t.string  "name"
+    t.text    "data"
+    t.integer "item_id"
+  end
 
   create_table "items", force: true do |t|
     t.string   "title"

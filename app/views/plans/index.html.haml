@@ -4,10 +4,13 @@
       {{item.title}}
     %p
       {{item.details}}
-    %p
+    %p{"ng-show" => "item.tags.length > 0"}
       Tags:
       %b{"ng-repeat" => "tag in item.tags"}
         {{tag.name}},
+    %p{"ng-show" => "item.item_elements.length > 0"}
+      %b{"ng-repeat" => "element in item.item_elements"}
+        {{element.element_type}}: {{element.name}}
     %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
       Delete
     %a{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}

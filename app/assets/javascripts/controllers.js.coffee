@@ -17,18 +17,25 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     initModal = () ->
         $scope.bookmarks = [ ]
         $scope.alerts = [ ]
-        $scope.locations = [ ]
         $scope.suggestions = [ ]
         $scope.yelpInfos = [ ]
         $scope.suggestionCount = 0
         if $scope.item != null
-            $scope.item_details = $scope.item.details
             $scope.item_title = $scope.item.title
+            $scope.item_details = $scope.item.details
             $scope.tags = $scope.item.tags
+            $scope.locations = [ ]
+            angular.forEach $scope.item.item_elements, (element) ->
+                switch element.element_type
+                    when "google_place"
+                        $scope.locations.push element
+                    else
+                        console.log "Unknown element type: " + element.element_type
         else
-            $scope.tags = [ ]
-            $scope.item_details = ""
             $scope.item_title = ""
+            $scope.item_details = ""
+            $scope.tags = [ ]
+            $scope.locations = [ ]
 
     $('#addItemModal').modal
         show: false
@@ -172,11 +179,15 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             addLocation suggestion.data
     
     $scope.submitItem = () ->
+        item_elements = [ ]
+        angular.forEach $scope.locations, (location) ->
+            item_elements.push location
         if $scope.item == null
             item = XplanData.createItem
                 title: $scope.item_title
                 details: $scope.item_details
                 tags: $scope.tags
+                item_elements: item_elements
             item.$promise.then () ->
                 $('#addItemModal').modal "hide"                
         else
@@ -185,6 +196,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 title: $scope.item_title
                 details: $scope.item_details
                 tags: $scope.tags
+                item_elements: item_elements
             item.$promise.then () ->
                 $('#addItemModal').modal "hide"                
 
