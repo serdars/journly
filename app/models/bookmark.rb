@@ -1,4 +1,3 @@
-require 'open-uri'
 require 'uri'
 
 class Bookmark
@@ -62,7 +61,7 @@ class Bookmark
     title = nil
 
     begin
-      source = open(url) {|f| f.read}
+      source = Net::HTTP.get(URI(url))
     rescue Exception => e
       Rails.logger.error "Can not get information from #{url}. Error: #{e.inspect}"
       return title

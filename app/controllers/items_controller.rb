@@ -11,14 +11,14 @@ class ItemsController < ApplicationController
   def create
     prepare_tags
     prepare_item_elements
-    
+
     @item = Item.create({
                           :title => params[:title],
                           :details => params[:details],
                           :tags => @tags,
                           :item_elements => @item_elements
                         })
-                          
+
     respond_to do |format|
       format.html { raise "Oops"}
       format.json { render :json => @item }
@@ -37,7 +37,7 @@ class ItemsController < ApplicationController
                    :tags => @tags,
                    :item_elements => @item_elements
                  })
-                          
+
     respond_to do |format|
       format.html { raise "Oops"}
       format.json { render :json => @item }
@@ -47,7 +47,7 @@ class ItemsController < ApplicationController
   # DELETE /items/:id
   def destroy
     Item.find(params[:id]).destroy
-    
+
     respond_to do |format|
       format.html { raise "Oops"}
       format.json { head :no_content }
@@ -56,17 +56,7 @@ class ItemsController < ApplicationController
 
   # GET /suggest
   def suggest
-    suggestions = [ ]
-
-    suggestionClass = case params[:type]
-                      when "tag"
-                        Tag
-                      when "location"
-                        GooglePlace
-                      else
-                        raise "Unknown suggestion type during suggest..."
-                      end
-    
+    suggestionClass = get_class(params[:type])
     suggestions = suggestionClass.suggest(params[:term])
 
     respond_to do |format|
@@ -82,27 +72,35 @@ class ItemsController < ApplicationController
 
   # GET /info
   def info
-    info = [ ]
-    case params[:type]
-    when "location"
-      info = GooglePlace.info(params[:key])
-    when "bookmark"
-      info = Bookmark.info(params[:key])
-    else
-      raise "Unknown suggestion type during info..."
-    end
+    infoClass = get_class(params[:type])
+    information = infoClass.info(params[:key])
 
     respond_to do |format|
       format.html { raise "Oops"}
       format.json {
-        render :json => { :info => info }
+        render :json => { :info => information }
       }
+    end
+  end
+
+  def get_class(element_type)
+    case element_type
+    when "tag"
+      Tag
+    when "google_place"
+      GooglePlace
+    when "bookmark"
+      Bookmark
+    when "yelp"
+      Yelp
+    else
+      raise "Unknown suggestion type during suggest..."
     end
   end
 
   def prepare_tags
     @tags = [ ]
-    
+
     if params[:tags] && !params[:tags].empty?
       params[:tags].each do |tag|
         if tag[:id]
@@ -116,14 +114,13 @@ class ItemsController < ApplicationController
 
   def prepare_item_elements
     @item_elements = [ ]
-    
+
     if params[:item_elements] && !params[:item_elements].empty?
       params[:item_elements].each do |element|
         if element[:id]
           @item_elements << ItemElement.find(element[:id])
         else
-          raise "Not implemented yet..."
-          @item_elements << ItemElement.create(:name => element[:name])
+          @item_elements << ItemElement.create_element(element)
         end
       end
     end

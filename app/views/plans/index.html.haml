@@ -11,6 +11,7 @@
     %p{"ng-show" => "item.item_elements.length > 0"}
       %b{"ng-repeat" => "element in item.item_elements"}
         {{element.element_type}}: {{element.name}}
+        %br
     %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
       Delete
     %a{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}

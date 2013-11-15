@@ -1,7 +1,16 @@
-require 'pry'
-
 class ItemElement < ActiveRecord::Base
   belongs_to :item
+
+  def self.create_element(data)
+    raise "You shall not create an element which is already an element..." if data[:id]
+    element_type = data.delete(:element_type)
+    name = data.delete(:name)
+    self.create({
+                  :element_type => element_type,
+                  :name => name,
+                  :data => data.to_json
+                })
+  end
 
   def self.create_google_place(google_place_data)
     self.create({
@@ -10,12 +19,12 @@ class ItemElement < ActiveRecord::Base
                   :data => google_place_data.to_json
                 })
   end
-  
+
   def as_json(options = { })
     # For item elements we are not sending the full data.
     # We are crafting the item element objects here.
     item_data = JSON.parse(self.data)
-    
+
     item_object = case self.element_type
                   when "google_place"
                     {
@@ -24,6 +33,10 @@ class ItemElement < ActiveRecord::Base
         :url => item_data['website'] || item_data['url'],
         :geometry => item_data['geometry']['location'],
         :phone_number => item_data['formatted_phone_number']
+      }
+                  when "bookmark"
+                    {
+        :name => self.name
       }
                   else
                     raise "Unknown element type: #{self.element_type}"

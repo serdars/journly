@@ -15,7 +15,6 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
     
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
     initModal = () ->
-        $scope.bookmarks = [ ]
         $scope.alerts = [ ]
         $scope.suggestions = [ ]
         $scope.yelpInfos = [ ]
@@ -29,6 +28,8 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 switch element.element_type
                     when "google_place"
                         $scope.locations.push element
+                    when "bookmark"
+                        $scope.bookmarks.push element
                     else
                         console.log "Unknown element type: " + element.element_type
         else
@@ -36,6 +37,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             $scope.item_details = ""
             $scope.tags = [ ]
             $scope.locations = [ ]
+            $scope.bookmarks = [ ]
 
     $('#addItemModal').modal
         show: false
@@ -79,7 +81,9 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         , 5000
 
     addBookmark = (value) ->
-        $scope.bookmarks.push value
+        $scope.bookmarks.push
+            element_type: "bookmark"
+            name: value
         addAlert "Added '" + value + "' as a bookmark..."
         $scope.processing_message = "Looking up " + value + " ..."
         $scope.suggestionCount += 1
@@ -112,7 +116,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         $scope.processing_message = "Looking up info for " + location.value + " ..."
         $scope.suggestionCount += 1
         XplanData.info
-            type: "location"
+            type: "google_place"
             key: location.reference
         .then (response) ->
             $scope.suggestionCount -= 1
@@ -151,8 +155,10 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                     suggestion.data = suggestion_data
                     if response.data.suggestion_type == "tag"
                         suggestion.message = "Add tag: " + suggestion_data.name
-                    else if response.data.suggestion_type == "location"
+                    else if response.data.suggestion_type == "google_place"
                         suggestion.message = "Add location: " + suggestion_data.value
+                    else
+                        console.log "Unknown type for suggestion: " + response.data.suggestion_type
                     $scope.suggestions.push suggestion
 
     $scope.magicInput = () ->
@@ -168,19 +174,21 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 # Otherwise get suggestions from the server
                 $scope.suggestions = [ ]
                 getSuggestions "tag", $scope.magicValue
-                getSuggestions "location", $scope.magicValue
+                getSuggestions "google_place", $scope.magicValue
         , 500
 
     $scope.suggested = (suggestion) ->
         resetSuggestions()
         if suggestion.type == "tag"
             addTag suggestion.data
-        else if suggestion.type == "location"
+        else if suggestion.type == "google_place"
             addLocation suggestion.data
     
     $scope.submitItem = () ->
         item_elements = [ ]
         angular.forEach $scope.locations, (location) ->
+            item_elements.push location
+        angular.forEach $scope.bookmarks, (location) ->
             item_elements.push location
         if $scope.item == null
             item = XplanData.createItem

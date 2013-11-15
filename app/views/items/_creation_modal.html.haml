@@ -21,7 +21,7 @@
           .bookmark.input-group{"ng-repeat" => "bookmark in bookmarks"}
             %span.input-group-addon
               %i.fa.fa-fw.fa-bookmark
-            %input.form-control{"type" => "text", "value" => "{{bookmark}}"}
+            %input.form-control{"type" => "text", "value" => "{{bookmark.name}}"}
             %button.close{"type" => "button", "aria-hidden" => "true", "ng-click" => "removeBookmark(bookmark)"}
               %i.fa.fa-times
           .location.well.well-sm{"ng-repeat" => "location in locations"}
