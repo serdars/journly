@@ -5,6 +5,7 @@ class Yelp
     biz_info = self.get_business_info(business_id)
 
     {
+      :element_type => "yelp",
       :name => biz_info["name"],
       :rating => biz_info["rating"],
       :review_count => biz_info["review_count"],

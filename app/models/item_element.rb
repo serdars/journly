@@ -4,7 +4,7 @@ class ItemElement < ActiveRecord::Base
   def self.create_element(data)
     raise "You shall not create an element which is already an element..." if data[:id]
     element_type = data.delete(:element_type)
-    name = data.delete(:name)
+    name = data[:name]
     self.create({
                   :element_type => element_type,
                   :name => name,
@@ -38,6 +38,8 @@ class ItemElement < ActiveRecord::Base
                     {
         :name => self.name
       }
+                  when "yelp"
+                    item_data
                   else
                     raise "Unknown element type: #{self.element_type}"
                   end

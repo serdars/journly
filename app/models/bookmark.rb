@@ -18,17 +18,14 @@ class Bookmark
     info = [ ]
     yelp_biz_id = self.extract_yelp_biz_id(url)
     if yelp_biz_id
-      yelp_info = Yelp.info(yelp_biz_id)
-      info << {
-        :type => "yelp",
-        :value => yelp_info
-      }
-
-      return info
+      return Yelp.info(yelp_biz_id)
     end
 
     title = self.get_title_from_url(url)
-    info << {:type => "name", :value => title} if title
+    info << {
+      :element_type => "title",
+      :name => title
+    } if title
 
     info
   end

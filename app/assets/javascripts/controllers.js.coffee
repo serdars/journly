@@ -17,7 +17,6 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     initModal = () ->
         $scope.alerts = [ ]
         $scope.suggestions = [ ]
-        $scope.yelpInfos = [ ]
         $scope.suggestionCount = 0
         if $scope.item != null
             $scope.item_title = $scope.item.title
@@ -30,6 +29,8 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                         $scope.locations.push element
                     when "bookmark"
                         $scope.bookmarks.push element
+                    when "yelp"
+                        $scope.yelpInfos.push element
                     else
                         console.log "Unknown element type: " + element.element_type
         else
@@ -38,6 +39,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             $scope.tags = [ ]
             $scope.locations = [ ]
             $scope.bookmarks = [ ]
+            $scope.yelpInfos = [ ]
 
     $('#addItemModal').modal
         show: false
@@ -93,14 +95,14 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         .then (response) ->
             $scope.suggestionCount -= 1
             angular.forEach response.data.info, (info) ->
-                if info.type == "name"
-                    $scope.item_title = info.value
-                    addAlert "Added '" + info.value + "' as the title..."
-                if info.type == "yelp"
-                    $scope.yelpInfos.push info.value
-                    addAlert "Added Yelp info for '" + info.value.name + "'"
-                    $scope.item_title = info.value.name
-                    addAlert "Added '" + info.value.name + "' as the title..."
+                if info.element_type == "title"
+                    $scope.item_title = info.name
+                    addAlert "Added '" + info.name + "' as the title..."
+                if info.element_type == "yelp"
+                    $scope.yelpInfos.push info
+                    addAlert "Added Yelp info for '" + info.name + "'"
+                    $scope.item_title = info.name
+                    addAlert "Added '" + info.name + "' as the title..."
             
     $scope.removeBookmark = (value) ->
         deleteElement $scope.bookmarks, value
@@ -120,8 +122,9 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             key: location.reference
         .then (response) ->
             $scope.suggestionCount -= 1
-            $scope.locations.push response.data.info
-            addAlert "Added '" + response.data.info.name + "' as a location..."
+            angular.forEach response.data.info, (info) ->
+                $scope.locations.push info
+                addAlert "Added '" + response.data.info.name + "' as a location..."
 
     $scope.removeLocation = (value) ->
         deleteElement $scope.locations, value
@@ -188,8 +191,10 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         item_elements = [ ]
         angular.forEach $scope.locations, (location) ->
             item_elements.push location
-        angular.forEach $scope.bookmarks, (location) ->
-            item_elements.push location
+        angular.forEach $scope.bookmarks, (bm) ->
+            item_elements.push bm
+        angular.forEach $scope.yelpInfos, (y) ->
+            item_elements.push y
         if $scope.item == null
             item = XplanData.createItem
                 title: $scope.item_title

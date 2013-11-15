@@ -74,7 +74,8 @@ class ItemsController < ApplicationController
   def info
     infoClass = get_class(params[:type])
     information = infoClass.info(params[:key])
-
+    information = [ information ] unless information.is_a? Array
+    
     respond_to do |format|
       format.html { raise "Oops"}
       format.json {
