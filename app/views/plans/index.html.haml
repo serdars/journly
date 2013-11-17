@@ -1,22 +1,36 @@
-.list-group{"ng-controller" => "itemListController"}
-  .list-group-item{"ng-repeat" => "item in items"}
-    %b
-      {{item.title}}
-    %p
-      {{item.details}}
-    %p{"ng-show" => "item.tags.length > 0"}
-      Tags:
-      %b{"ng-repeat" => "tag in item.tags"}
-        {{tag.name}},
-    %p{"ng-show" => "item.item_elements.length > 0"}
-      %b{"ng-repeat" => "element in item.item_elements"}
-        {{element.element_type}}: {{element.name}}
-        %br
-    %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
-      Delete
-    %a{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}
-      Edit
-  %a.list-group-item.active{"href" => "#", "ng-click" => "launchItemCreate()", "eat-click" => ""}
-    Add to the plan
+.navbar.navbar-default.navbar-fixed-top
+  .navbar-header
+    %a.navbar-brand{"href" => "#", "eat-click" => ""}
+      X-Planner
+  %p.navbar-text.navbar-right
+    Signed in as Miniko
+  %button.btn.btn-info.navbar-btn.navbar-right{"type" => "button"}
+    Add Plan Item
+  %form.navbar-form.navbar-right{"role" => "search"}
+    .form-group
+      %input.form-control{"type" => "text", "placeholder" => "Filter"}
+.main-view
+  .row
+    .col-md-3.list-canvas
+      .list-group{"ng-controller" => "itemListController"}
+        .list-group-item{"ng-repeat" => "item in items"}
+          %b
+            {{item.title}}
+          %p
+            {{item.details}}
+          %p{"ng-show" => "item.tags.length > 0"}
+            Tags:
+            %b{"ng-repeat" => "tag in item.tags"}
+              {{tag.name}},
+          %p{"ng-show" => "item.item_elements.length > 0"}
+            %b{"ng-repeat" => "element in item.item_elements"}
+              {{element.element_type}}: {{element.name}}
+              %br
+          %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
+            Delete
+          %a{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}
+            Edit
+        %a.list-group-item.active{"href" => "#", "ng-click" => "launchItemCreate()", "eat-click" => ""}
+          Add to the plan
+    .col-md-9.map-canvas{"ng-controller" => "mapController"}
 = render :partial => "items/creation_modal"
-.map-canvas

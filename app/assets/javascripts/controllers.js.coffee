@@ -1,8 +1,22 @@
 xplanControllers = angular.module "xplanControllers", [ ]
-    
+
+xplanControllers.controller "mapController", [ '$scope', '$rootScope', ($scope, $rootScope) ->
+    $(".map-canvas").height ($(window).height() - 51)
+    $(window).resize () ->
+        $(".map-canvas").height ($(window).height() - 51)
+        google.maps.event.trigger $scope.map, 'resize'
+
+    google.maps.visualRefresh = true;
+    mapOptions =
+        center: new google.maps.LatLng 35.784, -78.670
+        zoom: 8
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+
+    $scope.map = new google.maps.Map document.getElementsByClassName('map-canvas')[0], mapOptions
+]
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->
     $scope.items = XplanData.items
-    
+
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create'
 
@@ -12,16 +26,11 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
     $scope.editItem = (item) ->
         $rootScope.$broadcast 'item.edit', item
 
-    # Setup the Map
-    google.maps.visualRefresh = true;
-    mapOptions = 
-        center: new google.maps.LatLng 35.784, -78.670
-        zoom: 8
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-
-    $scope.map = new google.maps.Map document.getElementsByClassName('map-canvas')[0], mapOptions
+    $(".list-canvas").css "max-height", ($(window).height() - 51)
+    $(window).resize () ->
+        $(".list-canvas").css "max-height", ($(window).height() - 51)
 ]
-    
+
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
     initModal = () ->
         $scope.alerts = [ ]
@@ -54,7 +63,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         show: false
     $('#addItemModal').on "hidden.bs.modal", () ->
         initModal()
-        
+
     $rootScope.$on "item.create", () ->
         $scope.item = null
         initModal()
@@ -84,8 +93,8 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     deleteElement = (array, element) ->
         index = array.indexOf element
         array.splice index, 1
-    
-    addAlert = (alertMessage) -> 
+
+    addAlert = (alertMessage) ->
         $scope.alerts.push alertMessage
         $timeout () ->
             deleteElement $scope.alerts, alertMessage
@@ -112,14 +121,14 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                     addAlert "Added Yelp info for '" + info.name + "'"
                     $scope.item_title = info.name
                     addAlert "Added '" + info.name + "' as the title..."
-            
+
     $scope.removeBookmark = (value) ->
         deleteElement $scope.bookmarks, value
 
     addTag = (tag) ->
         addAlert "Added '" + tag.name + "' as a tag..."
         $scope.tags.push tag
-        
+
     $scope.removeTag = (tag) ->
         deleteElement $scope.tags, tag
 
@@ -195,7 +204,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             addTag suggestion.data
         else if suggestion.type == "google_place"
             addLocation suggestion.data
-    
+
     $scope.submitItem = () ->
         item_elements = [ ]
         angular.forEach $scope.locations, (location) ->
@@ -211,7 +220,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 tags: $scope.tags
                 item_elements: item_elements
             item.$promise.then () ->
-                $('#addItemModal').modal "hide"                
+                $('#addItemModal').modal "hide"
         else
             item = XplanData.editItem $scope.item,
                 id: $scope.item.id
@@ -220,7 +229,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 tags: $scope.tags
                 item_elements: item_elements
             item.$promise.then () ->
-                $('#addItemModal').modal "hide"                
+                $('#addItemModal').modal "hide"
 
     $scope.buttonMessage = () ->
         if $scope.item != null

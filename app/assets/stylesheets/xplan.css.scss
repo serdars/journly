@@ -25,7 +25,22 @@
     width: 48%;
 }
 
-.map-canvas {
-    height: 400px;
+body {
+    padding-top: 51px;
 }
+
+.main-view {
+    padding: 0 15px;
+}
+
+.list-canvas {
+    padding: 0 1px;
+    overflow-y: auto;
+}
+
+.map-canvas {
+    height: 500px;
+    padding: 0px;
+}
+
 
