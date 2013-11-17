@@ -1,10 +1,10 @@
-.navbar.navbar-default.navbar-fixed-top
+.navbar.navbar-default.navbar-fixed-top{"ng-controller" => "headerController"}
   .navbar-header
     %a.navbar-brand{"href" => "#", "eat-click" => ""}
       X-Planner
   %p.navbar-text.navbar-right
     Signed in as Miniko
-  %button.btn.btn-info.navbar-btn.navbar-right{"type" => "button"}
+  %button.btn.btn-info.navbar-btn.navbar-right{"type" => "button", "ng-click" => "launchItemCreate()"}
     Add Plan Item
   %form.navbar-form.navbar-right{"role" => "search"}
     .form-group
@@ -14,23 +14,39 @@
     .col-md-3.list-canvas
       .list-group{"ng-controller" => "itemListController"}
         .list-group-item{"ng-repeat" => "item in items"}
-          %b
-            {{item.title}}
-          %p
-            {{item.details}}
-          %p{"ng-show" => "item.tags.length > 0"}
-            Tags:
-            %b{"ng-repeat" => "tag in item.tags"}
-              {{tag.name}},
-          %p{"ng-show" => "item.item_elements.length > 0"}
-            %b{"ng-repeat" => "element in item.item_elements"}
-              {{element.element_type}}: {{element.name}}
-              %br
-          %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
-            Delete
-          %a{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}
-            Edit
-        %a.list-group-item.active{"href" => "#", "ng-click" => "launchItemCreate()", "eat-click" => ""}
-          Add to the plan
+          %ul.list-unstyled
+            %li
+              %b
+                {{item.title}}
+            %li
+              {{item.details}}
+            %li{"ng-show" => "item.tags.length > 0"}
+              %span.pi-tag.label.label-default.pull-left{"ng-repeat" => "tag in item.tags"}
+                {{tag.name}}
+              .clearfix
+            %li{"ng-show" => "yelpInfo(item).length > 0"}
+              .yelp-info-summary{"ng-repeat" => "yelp_info in yelpInfo(item)"}
+                .yelp-logo.pull-left
+                  %img{"src" => "/assets/yelp-logo.jpg", "width" => "50", "height" => "30"}
+                .yelp-summary.pull-left
+                  %b
+                    {{yelp_info.name}}
+                  %br
+                  %img{"ng-src" => "{{yelp_info.rating_img_url}}"}
+                  {{yelp_info.review_count}} Reviews
+                  %br
+                  %a{"href" => "{{yelp_info.url}}", "target" => "_blank"}
+                    More info on Yelp
+                .clearfix
+            %li{"ng-show" => "bookmarks(item).length > 0"}
+              .bookmark-summary{"ng-repeat" => "bookmark in bookmarks(item)"}
+                %a{"href" => "{{bookmark.name}}", "target" => "_blank"}
+                  More info on {{hostname(bookmark.name)}}
+            %li
+              %a{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
+                Delete
+            %li
+              %a{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}
+                Edit
     .col-md-9.map-canvas{"ng-controller" => "mapController"}
 = render :partial => "items/creation_modal"

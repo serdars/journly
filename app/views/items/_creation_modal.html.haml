@@ -66,7 +66,7 @@
             %suggestion-item{"ng-repeat" => "suggestion in suggestions", "on-select" => "suggested(suggestion)"}
               {{ suggestion.message }}
       .modal-footer
-        %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
-          Close
         %button.btn.btn-primary{"type" => "button", "ng-click" => "submitItem()"}
           {{ buttonMessage() }}
+        %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
+          Close

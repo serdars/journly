@@ -1,5 +1,10 @@
 xplanControllers = angular.module "xplanControllers", [ ]
 
+xplanControllers.controller "headerController", [ '$scope', '$rootScope', ($scope, $rootScope) ->
+    $scope.launchItemCreate = () ->
+        $rootScope.$broadcast 'item.create'
+]
+
 xplanControllers.controller "mapController", [ '$scope', '$rootScope', ($scope, $rootScope) ->
     $(".map-canvas").height ($(window).height() - 51)
     $(window).resize () ->
@@ -17,14 +22,32 @@ xplanControllers.controller "mapController", [ '$scope', '$rootScope', ($scope, 
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->
     $scope.items = XplanData.items
 
-    $scope.launchItemCreate = () ->
-        $rootScope.$broadcast 'item.create'
-
     $scope.deleteItem = (item) ->
         XplanData.deleteItem item
 
     $scope.editItem = (item) ->
         $rootScope.$broadcast 'item.edit', item
+
+    $scope.yelpInfo = (item) ->
+        yelp_info = [ ]
+        angular.forEach item.item_elements, (element) ->
+            if element.element_type == "yelp"
+                yelp_info.push element
+        yelp_info
+
+    $scope.bookmarks = (item) ->
+        bookmarks = [ ]
+        angular.forEach item.item_elements, (element) ->
+            if element.element_type == "bookmark"
+                bookmarks.push element
+        bookmarks
+
+    $scope.hostname = (url) ->
+        parts = url.split "/"
+        if parts[0] != "http:" && parts[0] != "https:"
+            parts[0]
+        else
+            parts[2]
 
     $(".list-canvas").css "max-height", ($(window).height() - 51)
     $(window).resize () ->

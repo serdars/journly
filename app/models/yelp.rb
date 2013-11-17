@@ -10,7 +10,8 @@ class Yelp
       :rating => biz_info["rating"],
       :review_count => biz_info["review_count"],
       :url => biz_info["url"],
-      :phone => biz_info["display_phone"]
+      :phone => biz_info["display_phone"],
+      :rating_img_url => biz_info["rating_img_url"]
     }
   end
   
