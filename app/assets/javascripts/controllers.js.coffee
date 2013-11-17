@@ -11,6 +11,15 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
 
     $scope.editItem = (item) ->
         $rootScope.$broadcast 'item.edit', item
+
+    # Setup the Map
+    google.maps.visualRefresh = true;
+    mapOptions = 
+        center: new google.maps.LatLng 35.784, -78.670
+        zoom: 8
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+
+    $scope.map = new google.maps.Map document.getElementsByClassName('map-canvas')[0], mapOptions
 ]
     
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
