@@ -2,15 +2,36 @@ xplanServices = angular.module "xplanServices", [ 'ngResource' ]
 
 xplanServices.factory 'XplanData', [ '$resource', '$http',
     ($resource, $http) ->
+        transformItem = (data, headersGetter) ->
+            items = JSON.parse(data)
+            angular.forEach items, (itemData) ->
+                itemData.yelpInfos = [ ]
+                itemData.bookmarks = [ ]
+                itemData.locations = [ ]
+
+                angular.forEach itemData.item_elements, (info) ->
+                    switch info.element_type
+                        when "google_place"
+                            itemData.locations.push info
+                        when "bookmark"
+                            itemData.bookmarks.push info
+                        when "yelp"
+                            itemData.yelpInfos.push info
+                        else
+                            console.log "Unknown element type: " + info.element_type
+
+            items
+
+        
         # Resource service we are using to talk to the backend
         PlanItem = $resource '/items/:itemId.json', {
             itemId: '@id'
         }, {
-            get: {method:'GET', params:{itemId:'@id'}, isArray:true},
+            get: {method:'GET', params:{itemId:'@id'}, transformResponse:transformItem, isArray:true},
             delete: {method:'DELETE', params:{itemId:'@id'}}
             save: {method:'POST', params:{itemId:'@id'}}
         }
-        
+
         dataService = { }
 
         dataService.items = PlanItem.get {},

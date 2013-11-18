@@ -1,4 +1,4 @@
-xplanApp = angular.module "xplanApp", [ 'xplanControllers', 'xplanServices', 'suggestionListDirective', 'xpTagDirective' ]
+xplanApp = angular.module "xplanApp", [ 'xplanControllers', 'xplanServices', 'suggestionListDirective', 'xpTagDirective', 'AngularGM' ]
 
 # Directive eat-click to do preventDefault() links when needed
 xplanApp.directive 'eatClick', () ->

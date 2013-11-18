@@ -5,20 +5,6 @@ xplanControllers.controller "headerController", [ '$scope', '$rootScope', ($scop
         $rootScope.$broadcast 'item.create'
 ]
 
-xplanControllers.controller "mapController", [ '$scope', '$rootScope', ($scope, $rootScope) ->
-    $(".map-canvas").height ($(window).height() - 51)
-    $(window).resize () ->
-        $(".map-canvas").height ($(window).height() - 51)
-        google.maps.event.trigger $scope.map, 'resize'
-
-    google.maps.visualRefresh = true;
-    mapOptions =
-        center: new google.maps.LatLng 35.784, -78.670
-        zoom: 8
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-
-    $scope.map = new google.maps.Map document.getElementsByClassName('map-canvas')[0], mapOptions
-]
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->
     $scope.items = XplanData.items
 
@@ -28,19 +14,24 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
     $scope.editItem = (item) ->
         $rootScope.$broadcast 'item.edit', item
 
-    $scope.yelpInfo = (item) ->
-        yelp_info = [ ]
+    getElementsByType = (item, type) ->
+        elements = [ ]
         angular.forEach item.item_elements, (element) ->
-            if element.element_type == "yelp"
-                yelp_info.push element
-        yelp_info
+            if element.element_type == type
+                elements.push element
+        elements
+
+    $scope.yelpInfo = (item) ->
+        getElementsByType item, "yelp"
 
     $scope.bookmarks = (item) ->
-        bookmarks = [ ]
-        angular.forEach item.item_elements, (element) ->
-            if element.element_type == "bookmark"
-                bookmarks.push element
-        bookmarks
+        getElementsByType item, "bookmark"
+
+    $scope.locations = (item) ->
+        getElementsByType item, "google_place"
+
+    $scope.markerClicked = (location, marker) ->
+        console.log "This is real..."
 
     $scope.hostname = (url) ->
         parts = url.split "/"
@@ -49,9 +40,12 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
         else
             parts[2]
 
+    $(".map-canvas").height ($(window).height() - 51)
     $(".list-canvas").css "max-height", ($(window).height() - 51)
     $(window).resize () ->
         $(".list-canvas").css "max-height", ($(window).height() - 51)
+        $(".map-canvas").height ($(window).height() - 51)
+        google.maps.event.trigger $scope.map, 'resize'
 
     highlightedItem = null
     $scope.highlightItem = (item) ->
@@ -65,7 +59,8 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
         item.highlighted = false
         if highlightedItem == item
             highlightedItem = null
-        
+
+    google.maps.visualRefresh = true;
 ]
 
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->

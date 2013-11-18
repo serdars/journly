@@ -16,4 +16,10 @@
 //= require angular-1.2.0-rc.3
 //= require angular-resource-1.2.0-rc.3
 //= require bootstrap-3.0.1
+//= require angular-gm/module
+//= require angular-gm/directives/gmMap
+//= require angular-gm/directives/gmMarkers
+//= require angular-gm/services/angulargmUtils
+//= require angular-gm/services/angulargmContainer
+//= require angular-gm/controllers/angulargmMapController
 //= require_tree .

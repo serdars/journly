@@ -10,16 +10,17 @@
     .form-group
       %input.form-control{"type" => "text", "placeholder" => "Filter"}
 .main-view
-  .row
+  .row{"ng-controller" => "itemListController"}
     .col-md-3.list-canvas
-      .list-group{"ng-controller" => "itemListController"}
-        .list-group-item{"ng-repeat" => "item in items", "ng-mouseover" => "highlightItem(item)", "ng-mouseout" => "unhighlightItem(item)", "ng-class" => "{highlighted:item.highlighted}"}
+      .list-group
+        .list-group-item{"ng-repeat" => "item in items", "ng-mouseover" => "highlightItem(item)", "ng-mouseout" => "unhighlightItem(item)", "ng-class" => "{highlighted:item.highlighted}", "ng-cloak" => ""}
           .actions-menu{"ng-show" => "item.highlighted"}
             .btn-group
-              %a.btn.btn-default{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
-                %i.fa.fa-trash-o.fa-lg
               %a.btn.btn-default{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}
                 %i.fa.fa-edit.fa-lg
+              %a.btn.btn-default{"href" => "#", "eat-click" => "", "ng-click" => "deleteItem(item)"}
+                %i.fa.fa-trash-o.fa-lg
+
           %ul.list-unstyled
             %li
               %b
@@ -30,7 +31,7 @@
               %span.pi-tag.label.label-default.pull-left{"ng-repeat" => "tag in item.tags"}
                 {{tag.name}}
               .clearfix
-            %li{"ng-show" => "yelpInfo(item).length > 0"}
+            %li{"ng-show" => "item.yelpInfos.length > 0"}
               .yelp-info-summary{"ng-repeat" => "yelp_info in yelpInfo(item)"}
                 .yelp-logo.pull-left
                   %img{"src" => "/assets/yelp-logo.jpg", "width" => "50", "height" => "30"}
@@ -44,9 +45,12 @@
                   %a{"href" => "{{yelp_info.url}}", "target" => "_blank"}
                     More info on Yelp
                 .clearfix
-            %li{"ng-show" => "bookmarks(item).length > 0"}
+            %li{"ng-show" => "item.bookmarks.length > 0"}
               .bookmark-summary{"ng-repeat" => "bookmark in bookmarks(item)"}
                 %a{"href" => "{{bookmark.name}}", "target" => "_blank"}
                   More info on {{hostname(bookmark.name)}}
-    .col-md-9.map-canvas{"ng-controller" => "mapController"}
+    .col-md-9
+      %gm-map.map-canvas{"gm-map-id" => "'myMap'"}
+        %gm-markers{"ng-repeat" => "item in items", "gm-objects" => "item.locations", "gm-get-lat-lng" => "{ lat: object.geometry.lat, lng: object.geometry.lng }", "gm-on-click" => "markerClicked(object, marker)"}
+
 = render :partial => "items/creation_modal"
