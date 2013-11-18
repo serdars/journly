@@ -50,7 +50,7 @@
                 %a{"href" => "{{bookmark.name}}", "target" => "_blank"}
                   More info on {{hostname(bookmark.name)}}
     .col-md-9
-      %gm-map.map-canvas{"gm-map-id" => "'myMap'"}
+      %gm-map.map-canvas{"gm-map-id" => "mapId", "gm-center" => "mapCenter", "gm-zoom" => "mapZoomLevel"}
         %gm-markers{"ng-repeat" => "item in items", "gm-objects" => "item.locations", "gm-get-lat-lng" => "{ lat: object.geometry.lat, lng: object.geometry.lng }", "gm-on-click" => "markerClicked(object, marker)"}
 
 = render :partial => "items/creation_modal"

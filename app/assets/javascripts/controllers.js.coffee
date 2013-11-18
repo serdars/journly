@@ -5,7 +5,7 @@ xplanControllers.controller "headerController", [ '$scope', '$rootScope', ($scop
         $rootScope.$broadcast 'item.create'
 ]
 
-xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', ($scope, $rootScope, XplanData) ->
+xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', 'angulargmContainer', ($scope, $rootScope, XplanData, angulargmContainer) ->
     $scope.items = XplanData.items
 
     $scope.deleteItem = (item) ->
@@ -40,6 +40,15 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
         else
             parts[2]
 
+    $scope.$on 'gmMarkersUpdated', (event, objects) ->
+        latlngBounds = new google.maps.LatLngBounds
+        
+        angular.forEach $scope.items, (item) ->
+            angular.forEach item.locations, (location) ->
+                latlngBounds.extend new google.maps.LatLng(location.geometry.lat, location.geometry.lng)
+        $scope.map.fitBounds latlngBounds
+
+
     $(".map-canvas").height ($(window).height() - 51)
     $(".list-canvas").css "max-height", ($(window).height() - 51)
     $(window).resize () ->
@@ -61,6 +70,10 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
             highlightedItem = null
 
     google.maps.visualRefresh = true;
+    $scope.mapId = 'PlanMap'
+    angulargmContainer.getMapPromise($scope.mapId).then (gmap, other) ->
+        $scope.map = gmap
+
 ]
 
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
