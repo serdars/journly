@@ -52,6 +52,20 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
     $(".list-canvas").css "max-height", ($(window).height() - 51)
     $(window).resize () ->
         $(".list-canvas").css "max-height", ($(window).height() - 51)
+
+    highlightedItem = null
+    $scope.highlightItem = (item) ->
+        if highlightedItem != null
+            highlightedItem.highlighted = false
+
+        highlightedItem = item
+        item.highlighted = true
+
+    $scope.unhighlightItem = (item) ->
+        item.highlighted = false
+        if highlightedItem == item
+            highlightedItem = null
+        
 ]
 
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
