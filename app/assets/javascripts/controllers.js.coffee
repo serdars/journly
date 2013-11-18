@@ -21,15 +21,6 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
                 elements.push element
         elements
 
-    $scope.yelpInfo = (item) ->
-        getElementsByType item, "yelp"
-
-    $scope.bookmarks = (item) ->
-        getElementsByType item, "bookmark"
-
-    $scope.locations = (item) ->
-        getElementsByType item, "google_place"
-
     $scope.markerClicked = (location, marker) ->
         console.log "This is real..."
 
@@ -47,7 +38,6 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
             angular.forEach item.locations, (location) ->
                 latlngBounds.extend new google.maps.LatLng(location.geometry.lat, location.geometry.lng)
         $scope.map.fitBounds latlngBounds
-
 
     $(".map-canvas").height ($(window).height() - 51)
     $(".list-canvas").css "max-height", ($(window).height() - 51)

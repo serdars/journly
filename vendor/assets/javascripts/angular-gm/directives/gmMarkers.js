@@ -242,6 +242,12 @@
         }
       });
 
+      // SERDAR
+      // Remove the markers when destroying the object
+      scope.$on('$destroy', function() {
+          updateMarkers(scope, [ ]);
+      });
+
       // initialize markers
       $timeout(angular.bind(null, updateMarkers, scope, scope.gmObjects()));
     }
