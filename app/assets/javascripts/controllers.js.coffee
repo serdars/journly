@@ -72,20 +72,12 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         $scope.suggestions = [ ]
         $scope.suggestionCount = 0
         if $scope.item != null
-            $scope.item_title = $scope.item.title
-            $scope.item_details = $scope.item.details
-            $scope.tags = $scope.item.tags
-            $scope.locations = [ ]
-            angular.forEach $scope.item.item_elements, (element) ->
-                switch element.element_type
-                    when "google_place"
-                        $scope.locations.push element
-                    when "bookmark"
-                        $scope.bookmarks.push element
-                    when "yelp"
-                        $scope.yelpInfos.push element
-                    else
-                        console.log "Unknown element type: " + element.element_type
+            $scope.item_title = angular.copy $scope.item.title
+            $scope.item_details = angular.copy $scope.item.details
+            $scope.tags = angular.copy $scope.item.tags
+            $scope.locations = angular.copy $scope.item.locations
+            $scope.bookmarks = angular.copy $scope.item.bookmarks
+            $scope.yelpInfos = angular.copy $scope.item.yelpInfos
         else
             $scope.item_title = ""
             $scope.item_details = ""
@@ -177,7 +169,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             $scope.suggestionCount -= 1
             angular.forEach response.data.info, (info) ->
                 $scope.locations.push info
-                addAlert "Added '" + response.data.info.name + "' as a location..."
+                addAlert "Added '" + info.name + "' as a location..."
 
     $scope.removeLocation = (value) ->
         deleteElement $scope.locations, value
