@@ -13,8 +13,8 @@
   .row{"ng-controller" => "itemListController"}
     .col-md-3.list-canvas
       .list-group
-        .list-group-item{"ng-repeat" => "item in items", "ng-mouseover" => "highlightItem(item)", "ng-mouseout" => "unhighlightItem(item)", "ng-class" => "{highlighted:item.highlighted}", "ng-cloak" => ""}
-          .actions-menu{"ng-show" => "item.highlighted"}
+        .list-group-item{"ng-repeat" => "item in items", "ng-mouseenter" => "highlightItem(item)", "ng-mouseleave" => "unhighlightItem(item)", "ng-click" => "selectItem(item)", "ng-class" => "{highlighted:item.highlighted || item.selected, selected:item.selected}", "ng-cloak" => ""}
+          .actions-menu{"ng-show" => "item.highlighted || item.selected"}
             .btn-group
               %a.btn.btn-default{"href" => "#", "eat-click" => "", "ng-click" => "editItem(item)"}
                 %i.fa.fa-edit.fa-lg
@@ -34,7 +34,7 @@
             %li{"ng-show" => "item.yelpInfos.length > 0"}
               .yelp-info-summary{"ng-repeat" => "yelp_info in item.yelpInfos"}
                 .yelp-logo.pull-left
-                  %img{"src" => "/assets/yelp-logo.jpg", "width" => "50", "height" => "30"}
+                  %img{"src" => "/assets/yelp-logo.png", "width" => "50", "height" => "30"}
                 .yelp-summary.pull-left
                   %b
                     {{yelp_info.name}}
@@ -51,6 +51,19 @@
                   More info on {{hostname(bookmark.name)}}
     .col-md-9
       %gm-map.map-canvas{"gm-map-id" => "mapId", "gm-center" => "mapCenter", "gm-zoom" => "mapZoomLevel"}
-        %gm-markers{"ng-repeat" => "item in items", "gm-objects" => "item.locations", "gm-get-lat-lng" => "{ lat: object.geometry.lat, lng: object.geometry.lng }", "gm-on-click" => "markerClicked(object, marker)"}
+        .item-map-elements{"ng-repeat" => "item in items"}
+          %gm-markers{"gm-objects" => "item.locations", "gm-get-lat-lng" => "{ lat: object.geometry.lat, lng: object.geometry.lng }", "gm-on-mouseover" => "markerEvent('highlight', object.item_id)", "gm-on-mouseout" => "markerEvent('unhighlight', object.item_id)", "gm-on-click" => "markerEvent('select', object.item_id)"}
+          .location-info-window{"ng-repeat" => "location in item.locations", "gm-info-window" => "location.$infoWindow"}
+            %ul.list-unstyled
+              %li
+                %h4
+                  {{location.name}}
+              %li
+                {{location.address}}
+              %li
+                {{location.phone_number}}
+              %li
+                %a{"href" => "{{location.url}}", "target" => "_blank"}
+                  Website
 
 = render :partial => "items/creation_modal"

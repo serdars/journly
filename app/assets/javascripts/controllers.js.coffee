@@ -21,9 +21,6 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
                 elements.push element
         elements
 
-    $scope.markerClicked = (location, marker) ->
-        console.log "This is real..."
-
     $scope.hostname = (url) ->
         parts = url.split "/"
         if parts[0] != "http:" && parts[0] != "https:"
@@ -31,9 +28,22 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
         else
             parts[2]
 
+    $scope.markerEvent = (event, itemId) ->
+        item = null
+        angular.forEach $scope.items, (i) ->
+            if i.id == itemId
+                item = i
+        switch event
+            when "highlight"
+                $scope.highlightItem(item)
+            when "unhighlight"
+                $scope.unhighlightItem(item)
+            when "select"
+                $scope.selectItem(item)
+
     $scope.$on 'gmMarkersUpdated', (event, objects) ->
         latlngBounds = new google.maps.LatLngBounds
-        
+
         angular.forEach $scope.items, (item) ->
             angular.forEach item.locations, (location) ->
                 latlngBounds.extend new google.maps.LatLng(location.geometry.lat, location.geometry.lng)
@@ -49,15 +59,35 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
     highlightedItem = null
     $scope.highlightItem = (item) ->
         if highlightedItem != null
-            highlightedItem.highlighted = false
-
-        highlightedItem = item
+            $scope.unhighlightItem highlightedItem
         item.highlighted = true
+        highlightedItem = item
+        unless item.selected
+            angular.forEach item.locations, (location) ->
+                location.$infoWindow.open $scope.map, location.$marker
 
     $scope.unhighlightItem = (item) ->
         item.highlighted = false
-        if highlightedItem == item
-            highlightedItem = null
+        unless item.selected
+            angular.forEach item.locations, (location) ->
+                location.$infoWindow.close()
+        highlightedItem = null
+
+    selectedItem = null
+    unselectItem = (item) ->
+        item.selected = false
+        selectedItem = null
+        angular.forEach item.locations, (location) ->
+            location.$infoWindow.close()
+
+    $scope.selectItem = (item) ->
+        if item.selected
+            unselectItem item
+        else
+            if selectedItem != null
+                unselectItem selectedItem
+            item.selected = true
+            selectedItem = item
 
     google.maps.visualRefresh = true;
     $scope.mapId = 'PlanMap'

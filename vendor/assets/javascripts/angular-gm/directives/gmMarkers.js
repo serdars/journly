@@ -173,6 +173,10 @@
             controller.addMarker(scope.$id, options);
             var marker = controller.getMarker(scope.$id, latLngObj.lat, latLngObj.lng);
 
+            // SERDAR
+            // Make marker accessible outside the scope
+            object.$marker = marker;
+
             // set up marker event handlers
             angular.forEach(handlers, function(handler, event) {
               controller.addListener(marker, event, function() {

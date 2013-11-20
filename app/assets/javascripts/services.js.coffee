@@ -10,6 +10,9 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
             angular.forEach itemData.item_elements, (info) ->
                 switch info.element_type
                     when "google_place"
+                        # (sadpanda)
+                        # Need this to tie the marker events to related item
+                        info.item_id = itemData.id
                         itemData.locations.push info
                     when "bookmark"
                         itemData.bookmarks.push info

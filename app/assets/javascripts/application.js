@@ -19,6 +19,7 @@
 //= require angular-gm/module
 //= require angular-gm/directives/gmMap
 //= require angular-gm/directives/gmMarkers
+//= require angular-gm/directives/gmInfoWindow
 //= require angular-gm/services/angulargmUtils
 //= require angular-gm/services/angulargmContainer
 //= require angular-gm/controllers/angulargmMapController
