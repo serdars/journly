@@ -3,15 +3,21 @@ xplanControllers = angular.module "xplanControllers", [ ]
 xplanControllers.controller "headerController", [ '$scope', '$rootScope', ($scope, $rootScope) ->
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create'
+
+    $scope.broadcastFilterText = () ->
+        $rootScope.$broadcast 'filter.term', $scope.filterText
 ]
 
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', 'angulargmContainer', ($scope, $rootScope, XplanData, angulargmContainer) ->
     $scope.items = XplanData.items
 
-    $scope.deleteItem = (item) ->
-        XplanData.deleteItem item
+    $scope.deleteItem = (event, item) ->
+        event.stopPropagation()
+        if confirm("Are you sure you want to delete this item?")
+            XplanData.deleteItem item
 
-    $scope.editItem = (item) ->
+    $scope.editItem = (event, item) ->
+        event.stopPropagation()
         $rootScope.$broadcast 'item.edit', item
 
     getElementsByType = (item, type) ->
@@ -88,7 +94,20 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
                 unselectItem selectedItem
             item.selected = true
             selectedItem = item
+    
+    $scope.$on 'filter.term', (event, filterTerm) ->
+        $scope.filterTerm = filterTerm
 
+    $scope.filterByTag = (item) ->
+        if $scope.filterTerm && $scope.filterTerm != ""
+            tagFound = false
+            angular.forEach item.tags, (tag) ->
+                if tag.name == $scope.filterTerm
+                    tagFound = true
+            return tagFound
+        else
+            return true
+            
     google.maps.visualRefresh = true;
     $scope.mapId = 'PlanMap'
     angulargmContainer.getMapPromise($scope.mapId).then (gmap, other) ->
