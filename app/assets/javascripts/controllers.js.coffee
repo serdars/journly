@@ -8,7 +8,7 @@ xplanControllers.controller "headerController", [ '$scope', '$rootScope', ($scop
         $rootScope.$broadcast 'filter.term', $scope.filterText
 ]
 
-xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'XplanData', 'angulargmContainer', ($scope, $rootScope, XplanData, angulargmContainer) ->
+xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', ($scope, $rootScope, $timeout, XplanData, angulargmContainer) ->
     $scope.items = XplanData.items
 
     $scope.deleteItem = (event, item) ->
@@ -47,6 +47,37 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
             when "select"
                 $scope.selectItem(item)
 
+    timer = null
+    debounce = (fn, delay) ->
+        if timer != null
+            $timeout.cancel timer
+        timer = $timeout fn, delay
+
+    $scope.markerHighlight = (itemId) ->
+        if timer != null
+            $timeout.cancel timer
+            timer = null
+        $scope.markerEvent "highlight", itemId
+        
+    $scope.markerUnhighlight = (itemId) ->
+        debounce () ->
+            $scope.markerEvent "unhighlight", itemId
+        , 500
+
+    $scope.setupInfoWindowEvents = (itemId) ->
+        $(".location-info-window").mouseenter (event) ->
+            if timer != null
+                $timeout.cancel timer
+                timer = null
+            $scope.markerEvent "highlight", itemId
+
+        $(".location-info-window").mouseleave (event) ->
+            debounce () ->
+                $scope.markerEvent "unhighlight", itemId
+            , 500
+
+        return
+
     $scope.$on 'gmMarkersUpdated', (event, objects) ->
         latlngBounds = new google.maps.LatLngBounds
 
@@ -68,9 +99,8 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
             $scope.unhighlightItem highlightedItem
         item.highlighted = true
         highlightedItem = item
-        unless item.selected
-            angular.forEach item.locations, (location) ->
-                location.$infoWindow.open $scope.map, location.$marker
+        angular.forEach item.locations, (location) ->
+            location.$infoWindow.open $scope.map, location.$marker
 
     $scope.unhighlightItem = (item) ->
         item.highlighted = false
@@ -94,6 +124,8 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', 'Xpl
                 unselectItem selectedItem
             item.selected = true
             selectedItem = item
+            angular.forEach item.locations, (location) ->
+                location.$infoWindow.open $scope.map, location.$marker
     
     $scope.$on 'filter.term', (event, filterTerm) ->
         $scope.filterTerm = filterTerm
@@ -124,7 +156,14 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             $scope.item_title = angular.copy $scope.item.title
             $scope.item_details = angular.copy $scope.item.details
             $scope.tags = angular.copy $scope.item.tags
-            $scope.locations = angular.copy $scope.item.locations
+            # Some magic here because we have marker and infowindow saved on the location
+            $scope.locations = [ ]
+            angular.forEach $scope.item.locations, (location) ->
+                location_copy = { }
+                angular.forEach location, (value, key) ->
+                    if key.substring(0,1) != "$"
+                        location_copy[key] = value
+                $scope.locations.push location_copy
             $scope.bookmarks = angular.copy $scope.item.bookmarks
             $scope.yelpInfos = angular.copy $scope.item.yelpInfos
         else

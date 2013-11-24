@@ -51,8 +51,8 @@
     .col-md-9
       %gm-map.map-canvas{"gm-map-id" => "mapId", "gm-center" => "mapCenter", "gm-zoom" => "mapZoomLevel"}
         .item-map-elements{"ng-repeat" => "item in items | filter:filterByTag"}
-          %gm-markers{"gm-objects" => "item.locations", "gm-get-lat-lng" => "{ lat: object.geometry.lat, lng: object.geometry.lng }", "gm-on-mouseover" => "markerEvent('highlight', object.item_id)", "gm-on-mouseout" => "markerEvent('unhighlight', object.item_id)", "gm-on-click" => "markerEvent('select', object.item_id)"}
-          .location-info-window{"ng-repeat" => "location in item.locations", "gm-info-window" => "location.$infoWindow"}
+          %gm-markers{"gm-objects" => "item.locations", "gm-get-lat-lng" => "{ lat: object.geometry.lat, lng: object.geometry.lng }", "gm-on-mouseover" => "markerHighlight(object.item_id)", "gm-on-mouseout" => "markerUnhighlight(object.item_id)", "gm-on-click" => "markerEvent('select', object.item_id)"}
+          .location-info-window{"ng-repeat" => "location in item.locations", "gm-info-window" => "location.$infoWindow", "gm-on-closeclick" => "markerEvent('select', location.item_id)", "gm-on-domready" => "setupInfoWindowEvents(location.item_id)"}
             %ul.list-unstyled
               %li
                 %h4
