@@ -78,6 +78,10 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
 
         return
 
+    $scope.initTooltips = () ->
+        $(".item-action").tooltip {container: "body"}
+        return
+
     $scope.$on 'gmMarkersUpdated', (event, objects) ->
         latlngBounds = new google.maps.LatLngBounds
 

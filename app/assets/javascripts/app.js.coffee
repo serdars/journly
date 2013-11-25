@@ -6,6 +6,14 @@ xplanApp.directive 'eatClick', () ->
         $(element).click (event) ->
             event.preventDefault();
 
+xplanApp.directive 'onFinishRender', ($timeout) ->
+    {
+        restrict: 'A'
+        link: (scope, element, attr) ->
+            if scope.$last == true
+                scope.$evalAsync attr.onFinishRender
+    }
+
 # Make sure csrf tokens are included in AJAX calls            
 xplanApp.config [ "$httpProvider", (provider) ->
     provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr 'content'
