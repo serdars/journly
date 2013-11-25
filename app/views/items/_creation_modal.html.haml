@@ -58,6 +58,28 @@
             %strong
               Magic Box:
             {{ alert }}
+          .list-group{"ng-show" => "suggestions.length == 0 && suggestionCount == 0"}
+            .list-group-item
+              %p
+                %i.fa.fa-magic.fa-3x.pull-left.fa-border
+                Magic Box makes saving information about your travels as easy as a pie... Here are a few things it can do for you:
+                .clearfix
+              %p
+                %i.fa.fa-retweet.fa-3x.pull-left.fa-border
+                Recommends you places and tags...
+                %br
+                %b
+                  Try:
+                Type anything in it (# for tags, @ for places)
+                .clearfix
+              %p
+                %i.fa.fa-search-plus.fa-3x.pull-left.fa-border
+                Saves the webpages you want to capture in your plans and searches them for important information.
+                %br
+                %b
+                  Try:
+                Pasting any link for magic try something from Yelp...
+                .clearfix
           %suggestion-list
             .list-group-item{"ng-show" => "suggestionCount > 0"}
               %span

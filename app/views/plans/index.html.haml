@@ -13,7 +13,7 @@
   .row{"ng-controller" => "itemListController"}
     .col-md-3.list-canvas
       .list-group
-        .list-group-item{"ng-show" => "filterTerm != ''"}
+        .list-group-item{"ng-show" => "filterTerm != ''", "ng-cloak" => ""}
           Filtering {{items.length}} items with tag: {{filterTerm}}
         .list-group-item{"ng-repeat" => "item in items | filter:filterByTag", "ng-mouseenter" => "highlightItem(item)", "ng-mouseleave" => "unhighlightItem(item)", "ng-click" => "selectItem(item)", "ng-class" => "{highlighted:item.highlighted || item.selected, selected:item.selected}", "ng-cloak" => "", "on-finish-render" => "initTooltips()"}
           .actions-menu{"ng-show" => "item.highlighted || item.selected"}
@@ -56,7 +56,7 @@
       %gm-map.map-canvas{"gm-map-id" => "mapId", "gm-center" => "mapCenter", "gm-zoom" => "mapZoomLevel"}
         .item-map-elements{"ng-repeat" => "item in items | filter:filterByTag"}
           %gm-markers{"gm-objects" => "item.locations", "gm-get-lat-lng" => "{ lat: object.geometry.lat, lng: object.geometry.lng }", "gm-on-mouseover" => "markerHighlight(object.item_id)", "gm-on-mouseout" => "markerUnhighlight(object.item_id)", "gm-on-click" => "markerEvent('select', object.item_id)"}
-          .location-info-window{"ng-repeat" => "location in item.locations", "gm-info-window" => "location.$infoWindow", "gm-on-closeclick" => "markerEvent('select', location.item_id)", "gm-on-domready" => "setupInfoWindowEvents(location.item_id)"}
+          .location-info-window{"ng-repeat" => "location in item.locations", "gm-info-window" => "location.$infoWindow", "gm-on-closeclick" => "markerEvent('select', location.item_id)", "gm-on-domready" => "setupInfoWindowEvents(location.item_id)", "ng-cloak" => ""}
             %ul.list-unstyled
               %li
                 %h4

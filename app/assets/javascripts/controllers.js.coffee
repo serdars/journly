@@ -348,6 +348,14 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 # If we have a URL add it as a bookmark
                 addBookmark $scope.magicValue
                 resetSuggestions()
+            else if $scope.magicValue.substring(0,1) == "#"
+                # Get suggestions for tags only
+                $scope.suggestions = [ ]
+                getSuggestions "tag", $scope.magicValue.substring(1, $scope.magicValue.length)
+            else if $scope.magicValue.substring(0,1) == "@"
+                # Get suggestions for locations only
+                $scope.suggestions = [ ]
+                getSuggestions "google_place", $scope.magicValue.substring(1, $scope.magicValue.length)
             else
                 # Otherwise get suggestions from the server
                 $scope.suggestions = [ ]
