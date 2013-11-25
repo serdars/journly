@@ -1,11 +1,44 @@
 xplanControllers = angular.module "xplanControllers", [ ]
 
-xplanControllers.controller "headerController", [ '$scope', '$rootScope', ($scope, $rootScope) ->
+xplanControllers.controller "headerController", [ '$scope', '$rootScope', '$timeout', ($scope, $rootScope, $timeout) ->
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create'
 
-    $scope.broadcastFilterText = () ->
-        $rootScope.$broadcast 'filter.term', $scope.filterText
+    $('input.filter-search').typeahead
+        name: 'tags'
+        remote:
+            url: '/suggest?type=tag&term=%QUERY'
+            filter: (parsedResponse) ->
+                tagData = [ ]
+                angular.forEach parsedResponse.suggestions, (tag) ->
+                    if tag.id && tag.name
+                        tagData.push
+                            value: tag.name
+                            tokens: tag.name.split(" ")
+
+                if tagData.length == 0
+                    tagData.push
+                        value: "No tags..."
+                        tokens: [ ]
+                tagData
+
+    $('input.filter-search').on "typeahead:selected", (event, tag) ->
+        if tag.value != "No tags..."
+            $rootScope.$broadcast 'filter.term', tag.value
+        else
+            $rootScope.$broadcast 'filter.term', ""
+            
+    timer = null
+    debounce = (fn, delay) ->
+        if timer != null
+            $timeout.cancel timer
+        timer = $timeout fn, delay
+
+    $('input.filter-search').keydown () ->
+        debounce () ->
+            if $('input.filter-search').val() == ""
+                $rootScope.$broadcast 'filter.term', ""
+        , 100
 ]
 
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', ($scope, $rootScope, $timeout, XplanData, angulargmContainer) ->
@@ -131,8 +164,10 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
             angular.forEach item.locations, (location) ->
                 location.$infoWindow.open $scope.map, location.$marker
     
+    $scope.filterTerm = ""
     $scope.$on 'filter.term', (event, filterTerm) ->
         $scope.filterTerm = filterTerm
+        $scope.$digest()
 
     $scope.filterByTag = (item) ->
         if $scope.filterTerm && $scope.filterTerm != ""
@@ -219,6 +254,11 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             deleteElement $scope.alerts, alertMessage
         , 5000
 
+    updateTitle = (title) ->
+        if $scope.item_title == ""
+            $scope.item_title = info.name
+            addAlert "Added '" + info.name + "' as the title..."
+
     addBookmark = (value) ->
         $scope.bookmarks.push
             element_type: "bookmark"
@@ -233,13 +273,11 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             $scope.suggestionCount -= 1
             angular.forEach response.data.info, (info) ->
                 if info.element_type == "title"
-                    $scope.item_title = info.name
-                    addAlert "Added '" + info.name + "' as the title..."
+                    updateTitle info.name
                 if info.element_type == "yelp"
                     $scope.yelpInfos.push info
                     addAlert "Added Yelp info for '" + info.name + "'"
-                    $scope.item_title = info.name
-                    addAlert "Added '" + info.name + "' as the title..."
+                    updateTitle info.name
 
     $scope.removeBookmark = (value) ->
         deleteElement $scope.bookmarks, value

@@ -12,5 +12,6 @@
  *= require bootstrap-3.0.1
  *= require bootstrap-theme-3.0.1
  *= require font-awesome-4.0.1
+ *= require typeahead.js-bootstrap
  *= require_tree .
  */

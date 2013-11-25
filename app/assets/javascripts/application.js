@@ -23,4 +23,5 @@
 //= require angular-gm/services/angulargmUtils
 //= require angular-gm/services/angulargmContainer
 //= require angular-gm/controllers/angulargmMapController
+//= require typeahead
 //= require_tree .
