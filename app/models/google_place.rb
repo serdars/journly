@@ -1,11 +1,10 @@
- require 'net/http'
+require 'net/http'
 
 class GooglePlace
-  def self.suggest(term)
+  def self.suggest(term, extra_params = { })
     suggestions = [ ]
-    response = nil
 
-    response = self.autocomplete({:input => term})
+    response = self.autocomplete(extra_params.merge({:input => term}))
     response["predictions"].each do |s|
       suggestions << {
         :value => s["description"],

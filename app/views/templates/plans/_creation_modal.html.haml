@@ -7,7 +7,13 @@
         %h4.modal-title
           Create a New Travel Plan
       .modal-body
-        Here we will have a form to create a plan. TODO
+        %form.form
+          .form-group
+            %input#plan_title.form-control{"type" => "text", "placeholder" => "Travel Name", "ng-model" => "plan_title"}
+          .form-group.positioning-parent
+            %input.form-control.plan-destination{"type" => "text", "placeholder" => "Destination"}
+          .form-group
+            %textarea#plan_details.form-control{"rows" => "5", "placeholder" => "Note", "ng-model" => "plan_details"}
       .modal-footer
         %button.btn.btn-primary{"type" => "button", "ng-click" => "submitItem()"}
           {{ buttonMessage() }}

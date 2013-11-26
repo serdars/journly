@@ -439,6 +439,31 @@ xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', 
         else
             "Add"
 
+    $('input.plan-destination').typeahead
+        name: 'destinations'
+        remote:
+            url: '/suggest?type=destination&term=%QUERY'
+            filter: (parsedResponse) ->
+                destinationData = [ ]
+                angular.forEach parsedResponse.suggestions, (destination) ->
+                    destinationData.push
+                        value: destination.value
+                        tokens: destination.value.split(" ")
+                        reference: destination.reference
+
+                if destinationData.length == 0
+                    destinationData.push
+                        value: "Can not find a destination"
+                        tokens: [ ]
+                        reference: null
+                destinationData
+
+    $('input.plan-destination').on "typeahead:selected", (event, destination) ->
+        if destination.reference != null
+            console.log "TODO: destination selected"
+        else
+            console.log "TODO: Error time"
+
     $scope.plan = null
     initModal()
 ]

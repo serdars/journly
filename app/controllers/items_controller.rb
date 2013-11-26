@@ -90,6 +90,8 @@ class ItemsController < ApplicationController
       Tag
     when "google_place"
       GooglePlace
+    when "destination"
+      Destination
     when "bookmark"
       Bookmark
     when "yelp"
