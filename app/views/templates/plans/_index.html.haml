@@ -1,0 +1,12 @@
+.navbar.navbar-default.navbar-fixed-top{"ng-controller" => "headerController"}
+  .navbar-header
+    %a.navbar-brand{"href" => "#", "eat-click" => ""}
+      X-Planner
+  %p.navbar-text.navbar-right
+    Signed in as Miniko
+  %button.btn.btn-info.navbar-btn.navbar-right{"type" => "button", "ng-click" => "launchPlanCreate()"}
+    Create Travel Plan
+.main-view{"ng-controller" => "planListController"}
+  This is the plans views congratulations {{message}}...
+
+= render :partial => "templates/plans/creation_modal"

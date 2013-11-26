@@ -1,0 +1,15 @@
+#addPlanModal.modal.fade{"tabindex" => "-1", "role" => "dialog", "aria-labelledby" => "myModalLabel", "aria-hidden" => "true", "ng-controller" => "planCreationController"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"type" => "button", "data-dismiss" => "modal", "aria-hidden" => "true"}
+          %i.fa.fa-times
+        %h4.modal-title
+          Create a New Travel Plan
+      .modal-body
+        Here we will have a form to create a plan. TODO
+      .modal-footer
+        %button.btn.btn-primary{"type" => "button", "ng-click" => "submitItem()"}
+          {{ buttonMessage() }}
+        %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
+          Close

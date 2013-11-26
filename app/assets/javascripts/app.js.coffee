@@ -1,4 +1,4 @@
-xplanApp = angular.module "xplanApp", [ 'xplanControllers', 'xplanServices', 'suggestionListDirective', 'xpTagDirective', 'AngularGM' ]
+xplanApp = angular.module "xplanApp", [ 'xplanControllers', 'xplanServices', 'suggestionListDirective', 'xpTagDirective', 'AngularGM', 'ngRoute' ]
 
 # Directive eat-click to do preventDefault() links when needed
 xplanApp.directive 'eatClick', () ->
@@ -17,7 +17,16 @@ xplanApp.directive 'onFinishRender', ($timeout) ->
 # Make sure csrf tokens are included in AJAX calls            
 xplanApp.config [ "$httpProvider", (provider) ->
     provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr 'content'
-    ]
+]
+
+xplanApp.config [ "$routeProvider", ($routeProvider, $templateCache) ->
+    $routeProvider.when "/plans",
+        templateUrl: 'plans/index.html'
+    $routeProvider.when "/plans/:planId",
+        templateUrl: 'plans/show.html'
+    $routeProvider.otherwise
+        redirectTo: '/plans'
+]
 
 xplanApp.controller "appController", ($scope) ->
     # Nothing for now.

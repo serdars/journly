@@ -4,6 +4,9 @@ xplanControllers.controller "headerController", [ '$scope', '$rootScope', '$time
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create'
 
+    $scope.launchPlanCreate = () ->
+        $rootScope.$broadcast 'plan.create'
+
     $('input.filter-search').typeahead
         name: 'tags'
         remote:
@@ -39,6 +42,10 @@ xplanControllers.controller "headerController", [ '$scope', '$rootScope', '$time
             if $('input.filter-search').val() == ""
                 $rootScope.$broadcast 'filter.term', ""
         , 100
+]
+
+xplanControllers.controller "planListController", [ "$scope", ($scope) ->
+    $scope.message = "dear user"
 ]
 
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', ($scope, $rootScope, $timeout, XplanData, angulargmContainer) ->
@@ -403,5 +410,35 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             "Add"
 
     $scope.item = null
+    initModal()
+]
+
+xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
+    initModal = () ->
+        # TODO
+        console.log "Modal will the inited"
+        
+    $('#addPlanModal').modal
+        show: false
+    $('#addPlanModal').on "hidden.bs.modal", () ->
+        initModal()
+
+    $rootScope.$on "plan.create", () ->
+        $scope.plan = null
+        initModal()
+        $('#addPlanModal').modal "show"
+
+    $rootScope.$on "plan.edit", (event, plan) ->
+        $scope.plan = plan
+        initModal()
+        $('#addPlanModal').modal "show"
+
+    $scope.buttonMessage = () ->
+        if $scope.plan != null
+            "Edit"
+        else
+            "Add"
+
+    $scope.plan = null
     initModal()
 ]
