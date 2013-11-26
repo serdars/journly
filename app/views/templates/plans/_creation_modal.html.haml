@@ -9,13 +9,13 @@
       .modal-body
         %form.form
           .form-group
-            %input#plan_title.form-control{"type" => "text", "placeholder" => "Travel Name", "ng-model" => "plan_title"}
+            %input#plan_name.form-control{"type" => "text", "placeholder" => "Travel Name", "ng-model" => "plan_name"}
           .form-group.positioning-parent
             %input.form-control.plan-destination{"type" => "text", "placeholder" => "Destination"}
           .form-group
-            %textarea#plan_details.form-control{"rows" => "5", "placeholder" => "Note", "ng-model" => "plan_details"}
+            %textarea#plan_note.form-control{"rows" => "5", "placeholder" => "Note", "ng-model" => "plan_note"}
       .modal-footer
-        %button.btn.btn-primary{"type" => "button", "ng-click" => "submitItem()"}
+        %button.btn.btn-primary{"type" => "button", "ng-click" => "submitPlan()"}
           {{ buttonMessage() }}
         %button.btn.btn-default{"type" => "button", "data-dismiss" => "modal"}
           Close

@@ -1,12 +1,70 @@
 xplanServices = angular.module "xplanServices", [ 'ngResource' ]
 
+xplanServices.factory 'XplanPlan', [ '$resource', '$http',
+    ($resource, $http) ->
+        # This is mostly copy paste from XplanData
+        transform = (planData) ->
+            planData
+
+        transformPlan = (data, headersGetter) ->
+            plans = JSON.parse(data)
+            if plans instanceof Array
+                angular.forEach plans, (planData) ->
+                    transform planData
+
+            else
+                transform plans
+
+            plans
+
+        Plan = $resource '/plans/:planId.json', {
+            planId: '@id'
+        }, {
+            get: {method:'GET', params:{planId:'@id'}, transformResponse:transformPlan, isArray:true},
+            delete: {method:'DELETE', params:{planId:'@id'}}
+            save: {method:'POST', params:{planId:'@id'}, transformResponse:transformPlan}
+        }
+
+        dataService = { }
+
+        dataService.plans = Plan.get {},
+            isArray: true
+
+        dataService.createPlan = (params) ->
+            Plan.save params, (plan) ->
+                dataService.plans.push plan
+            , () ->
+                console.log "Failed to CREATE"
+
+        dataService.editPlan = (plan, params) ->
+            Plan.save params, (newPlan) ->
+                angular.forEach newPlan, (value, key) ->
+                    if key.substring(0, 1) != "$"
+                        this[key] = value
+                , plan
+            , () ->
+                console.log "Failed to EDIT"
+
+        dataService.deletePlan = (plan) ->
+            plan.$delete()
+            .then () ->
+                # Delete succeeded
+                index = dataService.plans.indexOf plan
+                dataService.plans.splice index, 1
+            , () ->
+                # Delete failed
+                console.log "Failed to DELETE"
+
+        dataService
+]
+
 xplanServices.factory 'XplanData', [ '$resource', '$http',
     ($resource, $http) ->
         transform = (itemData) ->
             itemData.yelpInfos = [ ]
             itemData.bookmarks = [ ]
             itemData.locations = [ ]
-    
+
             angular.forEach itemData.item_elements, (info) ->
                 switch info.element_type
                     when "google_place"
@@ -22,7 +80,7 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
                         console.log "Unknown element type: " + info.element_type
 
             itemData
-        
+
         transformItem = (data, headersGetter) ->
             items = JSON.parse(data)
             if items instanceof Array
@@ -31,10 +89,10 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
 
             else
                 transform items
-                
+
             items
 
-        
+
         # Resource service we are using to talk to the backend
         PlanItem = $resource '/items/:itemId.json', {
             itemId: '@id'
@@ -48,7 +106,7 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
 
         dataService.items = PlanItem.get {},
             isArray: true
-        
+
         dataService.createItem = (params) ->
             PlanItem.save params, (item) ->
                 dataService.items.push item
@@ -85,6 +143,6 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
                 method: 'GET'
                 url: "/info.json"
                 params: params
-                
+
         dataService
 ]

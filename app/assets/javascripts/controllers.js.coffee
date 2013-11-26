@@ -30,7 +30,7 @@ xplanControllers.controller "headerController", [ '$scope', '$rootScope', '$time
             $rootScope.$broadcast 'filter.term', tag.value
         else
             $rootScope.$broadcast 'filter.term', ""
-            
+
     timer = null
     debounce = (fn, delay) ->
         if timer != null
@@ -42,10 +42,6 @@ xplanControllers.controller "headerController", [ '$scope', '$rootScope', '$time
             if $('input.filter-search').val() == ""
                 $rootScope.$broadcast 'filter.term', ""
         , 100
-]
-
-xplanControllers.controller "planListController", [ "$scope", ($scope) ->
-    $scope.message = "dear user"
 ]
 
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', ($scope, $rootScope, $timeout, XplanData, angulargmContainer) ->
@@ -98,7 +94,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
             $timeout.cancel timer
             timer = null
         $scope.markerEvent "highlight", itemId
-        
+
     $scope.markerUnhighlight = (itemId) ->
         debounce () ->
             $scope.markerEvent "unhighlight", itemId
@@ -170,7 +166,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
             selectedItem = item
             angular.forEach item.locations, (location) ->
                 location.$infoWindow.open $scope.map, location.$marker
-    
+
     $scope.filterTerm = ""
     $scope.$on 'filter.term', (event, filterTerm) ->
         $scope.filterTerm = filterTerm
@@ -185,7 +181,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
             return tagFound
         else
             return true
-            
+
     google.maps.visualRefresh = true;
     $scope.mapId = 'PlanMap'
     angulargmContainer.getMapPromise($scope.mapId).then (gmap, other) ->
@@ -378,6 +374,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             addLocation suggestion.data
 
     $scope.submitItem = () ->
+        # TODO: Need to do some validation here...
         item_elements = [ ]
         angular.forEach $scope.locations, (location) ->
             item_elements.push location
@@ -413,11 +410,20 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     initModal()
 ]
 
-xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
+xplanControllers.controller "planListController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', ($scope, $rootScope, $timeout, XplanPlan) ->
+    $scope.plans = XplanPlan.plans
+]
+
+xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan',  ($scope, $rootScope, $timeout, XplanPlan) ->
     initModal = () ->
-        # TODO
-        console.log "Modal will the inited"
-        
+        $scope.destinationReference = null
+        if $scope.plan != null
+            $scope.plan_name = angular.copy $scope.plan.name
+            $scope.plan_note = angular.copy $scope.plan.note
+        else
+            $scope.plan_name = ""
+            $scope.plan_note = ""
+
     $('#addPlanModal').modal
         show: false
     $('#addPlanModal').on "hidden.bs.modal", () ->
@@ -460,9 +466,27 @@ xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', 
 
     $('input.plan-destination').on "typeahead:selected", (event, destination) ->
         if destination.reference != null
-            console.log "TODO: destination selected"
+            $scope.destinationReference = destination.reference
         else
             console.log "TODO: Error time"
+
+    $scope.submitPlan = () ->
+        # TODO: Need to do some validation here...
+        if $scope.plan == null
+            plan = XplanPlan.createPlan
+                name: $scope.plan_name
+                note: $scope.plan_note
+                destination_reference: $scope.destinationReference
+        else
+            plan = XplanPlan.editPlan $scope.plan,
+                id: $scope.plan.id
+                name: $scope.plan_name
+                note: $scope.plan_note
+                destination_reference: $scope.destinationReference
+
+        plan.$promise.then () ->
+            $('#addPlanModal').modal "hide"
+
 
     $scope.plan = null
     initModal()

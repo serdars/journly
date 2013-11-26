@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131114080901) do
+ActiveRecord::Schema.define(version: 20131126080807) do
 
   create_table "item_elements", force: true do |t|
     t.string  "element_type"
@@ -30,6 +30,15 @@ ActiveRecord::Schema.define(version: 20131114080901) do
   create_table "items_tags", force: true do |t|
     t.integer "item_id"
     t.integer "tag_id"
+  end
+
+  create_table "plans", force: true do |t|
+    t.string   "name"
+    t.text     "note"
+    t.string   "destination_reference"
+    t.text     "destination"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tags", force: true do |t|
