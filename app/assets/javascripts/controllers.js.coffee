@@ -487,6 +487,20 @@ xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', 
         plan.$promise.then () ->
             $('#addPlanModal').modal "hide"
 
+    $scope.initTooltips = () ->
+        $(".item-action").tooltip {container: "body"}
+        return
+
+    highlightedPlan = null
+    $scope.highlightPlan = (plan) ->
+        if highlightedPlan != null
+            $scope.unhighlightPlan highlightedPlan
+        plan.highlighted = true
+        highlightedPlan = plan
+
+    $scope.unhighlightPlan = (plan) ->
+        plan.highlighted = false
+        highlightedPlan = null
 
     $scope.plan = null
     initModal()

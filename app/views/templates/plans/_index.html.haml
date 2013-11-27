@@ -8,7 +8,12 @@
     Create Travel Plan
 .main-view{"ng-controller" => "planListController"}
   .list-group
-    .list-group-item{"ng-repeat" => "plan in plans"}
+    .list-group-item{"ng-repeat" => "plan in plans", "on-finish-render" => "initTooltips()", "ng-class" => "{highlighted:plan.highlighted}", "ng-mouseenter" => "highlightPlan(plan)", "ng-mouseleave" => "unhighlightPlan(plan)", "ng-cloak" => ""}
       {{plan.name}} / {{plan.note}} / Going to {{plan.destination.name}}
-
+      .actions-menu{"ng-show" => "plan.highlighted"}
+        .btn-group
+          %a.btn.btn-default.item-action{"href" => "#", "eat-click" => "", "ng-click" => "plan($event, item)", "data-toggle" => "tooltip", "data-placement" => "top", "data-original-title" => "Edit Plan"}
+            %i.fa.fa-edit.fa-lg
+          %a.btn.btn-default.item-action{"href" => "#", "eat-click" => "", "ng-click" => "deletePlan($event, plan)", "data-toggle" => "tooltip", "data-placement" => "top", "data-original-title" => "Delete Plan"}
+            %i.fa.fa-trash-o.fa-lg
 = render :partial => "templates/plans/creation_modal"

@@ -16,6 +16,7 @@
 //= require angular-1.2.0-rc.3
 //= require angular-resource-1.2.0-rc.3
 //= require angular-route-1.2.0-rc.3
+//= require angular-ui-router-0.2.0
 //= require bootstrap-3.0.1
 //= require angular-gm/module
 //= require angular-gm/directives/gmMap
