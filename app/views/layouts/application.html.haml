@@ -7,6 +7,11 @@
     = javascript_include_tag "application", "data-turbolinks-track" => true
     = csrf_meta_tags
     %meta{"name" => "viewport", "content" => "initial-scale=1.0, user-scalable=no"}
-    = render :partial => "templates/templates"
+    -# Render all of the js_templates
+    - js_templates.each do |js_template|
+      %script{"type" => "text/ng-template", "id" => "#{js_template[:id]}"}
+        = render :partial => js_template[:render_path]
   %body{"ng-controller" => "appController"}
+    %div{"ui-view" => "main"}
+    %div{"ui-view" => "creation"}
     = yield

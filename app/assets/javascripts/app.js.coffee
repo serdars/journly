@@ -1,4 +1,4 @@
-xplanApp = angular.module "xplanApp", [ 'xplanControllers', 'xplanServices', 'suggestionListDirective', 'xpTagDirective', 'AngularGM', 'ngRoute' ]
+xplanApp = angular.module "xplanApp", [ 'xplanControllers', 'xplanServices', 'suggestionListDirective', 'xpTagDirective', 'headerDirective', 'AngularGM', 'ui.router' ]
 
 # Directive eat-click to do preventDefault() links when needed
 xplanApp.directive 'eatClick', () ->
@@ -19,14 +19,27 @@ xplanApp.config [ "$httpProvider", (provider) ->
     provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr 'content'
 ]
 
-xplanApp.config [ "$routeProvider", ($routeProvider, $templateCache) ->
-    $routeProvider.when "/plans",
-        templateUrl: 'plans/index.html'
-    $routeProvider.when "/plans/:planId",
-        templateUrl: 'plans/show.html'
-    $routeProvider.otherwise
-        redirectTo: '/plans'
-]
+xplanApp.config ($stateProvider, $urlRouterProvider) ->
+    $urlRouterProvider.otherwise "/plans"
+    $stateProvider
+        .state 'plans',
+            url: "/plans"
+            views:
+                main:
+                    templateUrl: "plans/index.html"
+                    controller: "planListController"
+                creation:
+                    templateUrl: 'plans/creationModal.html'
+                    controller: "planCreationController"
+        .state 'items',
+            url: "/plans/:planId"
+            views:
+                main:
+                    templateUrl: "plans/show.html"
+                    controller: "itemListController"
+                creation:
+                    templateUrl: 'items/creationModal.html'
+                    controller: "itemCreationController"
 
 xplanApp.controller "appController", ($scope) ->
     # Nothing for now.

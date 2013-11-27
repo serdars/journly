@@ -5,7 +5,7 @@ suggestionListDirective.directive 'suggestionList', ($templateCache) ->
         restrict: 'E'
         transclude: true
         scope: { }
-        template: $templateCache.get 'suggestion-list.html'
+        templateUrl: 'directives/suggestionList.html'
         controller: ($scope) ->
             $scope.suggestions = [ ]
 
@@ -28,6 +28,7 @@ suggestionListDirective.directive 'suggestionItem', ($templateCache) ->
         require: "^suggestionList"
         restrict: "E"
         transclude: true
+        templateUrl: 'directives/suggestionItem.html'
         scope:
             select: '&onSelect'
         link: ($scope, element, attrs, suggestionListCtrl) ->
@@ -37,5 +38,4 @@ suggestionListDirective.directive 'suggestionItem', ($templateCache) ->
                 suggestionListCtrl.highlightSuggestion $scope
 
             suggestionListCtrl.addSuggestion $scope
-        template: $templateCache.get 'suggestion-item.html'
     }

@@ -6,5 +6,5 @@ xpTagDirective.directive 'xpTag', ($templateCache) ->
         transclude: true
         scope:
             remove: '&onRemove'
-        template: $templateCache.get 'xp-tag.html'
+        templateUrl: 'directives/xpTag.html'
     }

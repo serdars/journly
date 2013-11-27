@@ -1,16 +1,11 @@
-.navbar.navbar-default.navbar-fixed-top{"ng-controller" => "headerController"}
-  .navbar-header
-    %a.navbar-brand{"href" => "#", "eat-click" => ""}
-      X-Planner
-  %p.navbar-text.navbar-right
-    Signed in as Miniko
+%header
   %button.btn.btn-info.navbar-btn.navbar-right{"type" => "button", "ng-click" => "launchItemCreate()"}
     Add Plan Item
   %form.navbar-form.navbar-right{"role" => "search"}
     .form-group
       %input.form-control.filter-search{"type" => "text", "placeholder" => "Filter by Tag"}
 .main-view
-  .row{"ng-controller" => "itemListController"}
+  .row
     .col-md-3.list-canvas
       .list-group
         .list-group-item{"ng-show" => "filterTerm != ''", "ng-cloak" => ""}
@@ -68,5 +63,3 @@
               %li
                 %a{"href" => "{{location.url}}", "target" => "_blank"}
                   Website
-
-= render :partial => "templates/items/creation_modal"

@@ -1,11 +1,10 @@
 xplanControllers = angular.module "xplanControllers", [ ]
 
-xplanControllers.controller "headerController", [ '$scope', '$rootScope', '$timeout', ($scope, $rootScope, $timeout) ->
+xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', ($scope, $rootScope, $timeout, XplanData, angulargmContainer) ->
+    $scope.items = XplanData.items
+
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create'
-
-    $scope.launchPlanCreate = () ->
-        $rootScope.$broadcast 'plan.create'
 
     $('input.filter-search').typeahead
         name: 'tags'
@@ -31,21 +30,17 @@ xplanControllers.controller "headerController", [ '$scope', '$rootScope', '$time
         else
             $rootScope.$broadcast 'filter.term', ""
 
-    timer = null
+    filterTimer = null
     debounce = (fn, delay) ->
-        if timer != null
+        if filterTimer != null
             $timeout.cancel timer
-        timer = $timeout fn, delay
+        filterTimer = $timeout fn, delay
 
     $('input.filter-search').keydown () ->
         debounce () ->
             if $('input.filter-search').val() == ""
                 $rootScope.$broadcast 'filter.term', ""
         , 100
-]
-
-xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', ($scope, $rootScope, $timeout, XplanData, angulargmContainer) ->
-    $scope.items = XplanData.items
 
     $scope.deleteItem = (event, item) ->
         event.stopPropagation()
@@ -412,6 +407,25 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
 
 xplanControllers.controller "planListController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', ($scope, $rootScope, $timeout, XplanPlan) ->
     $scope.plans = XplanPlan.plans
+
+    $scope.launchPlanCreate = () ->
+        $rootScope.$broadcast 'plan.create'
+    
+    $scope.initTooltips = () ->
+        $(".item-action").tooltip {container: "body"}
+        return
+
+    highlightedPlan = null
+    $scope.highlightPlan = (plan) ->
+        if highlightedPlan != null
+            $scope.unhighlightPlan highlightedPlan
+        plan.highlighted = true
+        highlightedPlan = plan
+
+    $scope.unhighlightPlan = (plan) ->
+        plan.highlighted = false
+        highlightedPlan = null
+
 ]
 
 xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan',  ($scope, $rootScope, $timeout, XplanPlan) ->
@@ -486,21 +500,6 @@ xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', 
 
         plan.$promise.then () ->
             $('#addPlanModal').modal "hide"
-
-    $scope.initTooltips = () ->
-        $(".item-action").tooltip {container: "body"}
-        return
-
-    highlightedPlan = null
-    $scope.highlightPlan = (plan) ->
-        if highlightedPlan != null
-            $scope.unhighlightPlan highlightedPlan
-        plan.highlighted = true
-        highlightedPlan = plan
-
-    $scope.unhighlightPlan = (plan) ->
-        plan.highlighted = false
-        highlightedPlan = null
 
     $scope.plan = null
     initModal()
