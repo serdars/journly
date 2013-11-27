@@ -405,7 +405,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     initModal()
 ]
 
-xplanControllers.controller "planListController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', ($scope, $rootScope, $timeout, XplanPlan) ->
+xplanControllers.controller "planListController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', '$location', ($scope, $rootScope, $timeout, XplanPlan, $location) ->
     $scope.plans = XplanPlan.plans
 
     $scope.launchPlanCreate = () ->
@@ -426,18 +426,31 @@ xplanControllers.controller "planListController", [ '$scope', '$rootScope', '$ti
         plan.highlighted = false
         highlightedPlan = null
 
+    $scope.deletePlan = (event, plan) ->
+        event.stopPropagation()
+        if confirm("Are you sure you want to delete this plan?")
+            XplanPlan.deletePlan plan
+
+    $scope.editPlan = (event, plan) ->
+        event.stopPropagation()
+        $rootScope.$broadcast 'plan.edit', plan
+
+    $scope.showPlan = (planId) ->
+        $location.path "/plans/" + planId
+
 ]
 
 xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan',  ($scope, $rootScope, $timeout, XplanPlan) ->
     initModal = () ->
-        $scope.destinationReference = null
         if $scope.plan != null
             $scope.plan_name = angular.copy $scope.plan.name
             $scope.plan_note = angular.copy $scope.plan.note
+            $scope.destinationReference = angular.copy $scope.plan.destination_reference
         else
             $scope.plan_name = ""
             $scope.plan_note = ""
-
+            $scope.destinationReference = null
+            
     $('#addPlanModal').modal
         show: false
     $('#addPlanModal').on "hidden.bs.modal", () ->
@@ -452,6 +465,7 @@ xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', 
         $scope.plan = plan
         initModal()
         $('#addPlanModal').modal "show"
+        $('input.plan-destination').val(plan.destination.name)
 
     $scope.buttonMessage = () ->
         if $scope.plan != null
