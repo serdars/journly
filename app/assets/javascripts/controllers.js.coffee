@@ -405,15 +405,30 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     initModal()
 ]
 
-xplanControllers.controller "planListController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', '$location', ($scope, $rootScope, $timeout, XplanPlan, $location) ->
+xplanControllers.controller "planListController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', '$location', 'angulargmContainer', ($scope, $rootScope, $timeout, XplanPlan, $location, angulargmContainer) ->
     $scope.plans = XplanPlan.plans
 
     $scope.launchPlanCreate = () ->
         $rootScope.$broadcast 'plan.create'
-    
-    $scope.initTooltips = () ->
+        
+    initTooltips = () ->
         $(".item-action").tooltip {container: "body"}
         return
+
+    initMaps = () ->
+        angular.forEach $scope.plans, (plan) ->
+            map = angulargmContainer.getMap("planSummaryMap_" + plan.id)
+            map.setOptions
+                center: new google.maps.LatLng(plan.destination.geometry.lat, plan.destination.geometry.lng)
+                draggable: false
+                mapTypeId: google.maps.MapTypeId.HYBRID
+                scrollwheel: false
+                disableDefaultUI: true
+                zoom: 10
+
+    $scope.initViews = () ->
+        initTooltips()
+        initMaps()
 
     highlightedPlan = null
     $scope.highlightPlan = (plan) ->
@@ -450,7 +465,7 @@ xplanControllers.controller "planCreationController", [ '$scope', '$rootScope', 
             $scope.plan_name = ""
             $scope.plan_note = ""
             $scope.destinationReference = null
-            
+
     $('#addPlanModal').modal
         show: false
     $('#addPlanModal').on "hidden.bs.modal", () ->

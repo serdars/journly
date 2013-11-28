@@ -2,12 +2,21 @@
   %button.btn.btn-info.navbar-btn.navbar-right{"type" => "button", "ng-click" => "launchPlanCreate()"}
     Create Travel Plan
 .main-view
-  .list-group
-    .list-group-item{"ng-repeat" => "plan in plans", "on-finish-render" => "initTooltips()", "ng-class" => "{highlighted:plan.highlighted}", "ng-mouseenter" => "highlightPlan(plan)", "ng-mouseleave" => "unhighlightPlan(plan)", "ng-cloak" => "", "ng-click" => "showPlan(plan.id)"}
-      {{plan.name}} / {{plan.note}} / Going to {{plan.destination.name}}
+  .list-group.plan-views
+    .list-group-item.plan-view{"ng-repeat" => "plan in plans", "on-finish-render" => "initViews()", "ng-class" => "{highlighted:plan.highlighted}", "ng-mouseenter" => "highlightPlan(plan)", "ng-mouseleave" => "unhighlightPlan(plan)", "ng-cloak" => "", "ng-click" => "showPlan(plan.id)"}
+      %gm-map.plan-map.pull-left{"gm-map-id" => "'planSummaryMap_' + plan.id"}
+      .plan-summary.pull-left
+        %h3
+          {{plan.name}}
+        %h4.text-info
+          {{plan.destination.name}}
+        .text-default
+          {{plan.note}}
+      .clearfix
       .actions-menu{"ng-show" => "plan.highlighted"}
         .btn-group
           %a.btn.btn-default.item-action{"href" => "#", "eat-click" => "", "ng-click" => "editPlan($event, plan)", "data-toggle" => "tooltip", "data-placement" => "top", "data-original-title" => "Edit Plan"}
             %i.fa.fa-edit.fa-lg
           %a.btn.btn-default.item-action{"href" => "#", "eat-click" => "", "ng-click" => "deletePlan($event, plan)", "data-toggle" => "tooltip", "data-placement" => "top", "data-original-title" => "Delete Plan"}
             %i.fa.fa-trash-o.fa-lg
+    .clearfix
