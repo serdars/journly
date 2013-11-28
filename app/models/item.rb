@@ -1,6 +1,7 @@
 class Item < ActiveRecord::Base
   has_and_belongs_to_many :tags
   has_many :item_elements
+  belongs_to :plan
 
   def as_json(options = { })
     options[:include] = :tags

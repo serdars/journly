@@ -1,10 +1,11 @@
 xplanControllers = angular.module "xplanControllers", [ ]
 
-xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', ($scope, $rootScope, $timeout, XplanData, angulargmContainer) ->
-    $scope.items = XplanData.items
+xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', '$stateParams', ($scope, $rootScope, $timeout, XplanData, angulargmContainer, $stateParams) ->
+    $scope.plan_id = $stateParams.planId
+    $scope.items = XplanData.getItems $scope.plan_id
 
     $scope.launchItemCreate = () ->
-        $rootScope.$broadcast 'item.create'
+        $rootScope.$broadcast 'item.create', $scope.plan_id
 
     $('input.filter-search').typeahead
         name: 'tags'
@@ -49,7 +50,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
 
     $scope.editItem = (event, item) ->
         event.stopPropagation()
-        $rootScope.$broadcast 'item.edit', item
+        $rootScope.$broadcast 'item.edit', item, $scope.plan_id
 
     getElementsByType = (item, type) ->
         elements = [ ]
@@ -216,13 +217,15 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     $('#addItemModal').on "hidden.bs.modal", () ->
         initModal()
 
-    $rootScope.$on "item.create", () ->
+    $rootScope.$on "item.create", (event, planId) ->
         $scope.item = null
+        $scope.plan_id = planId
         initModal()
         $('#addItemModal').modal "show"
 
-    $rootScope.$on "item.edit", (event, item) ->
+    $rootScope.$on "item.edit", (event, item, planId) ->
         $scope.item = item
+        $scope.plan_id = planId
         initModal()
         $('#addItemModal').modal "show"
 
@@ -379,6 +382,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             item_elements.push y
         if $scope.item == null
             item = XplanData.createItem
+                plan_id: $scope.plan_id
                 title: $scope.item_title
                 details: $scope.item_details
                 tags: $scope.tags
@@ -387,6 +391,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 $('#addItemModal').modal "hide"
         else
             item = XplanData.editItem $scope.item,
+                plan_id: $scope.plan_id
                 id: $scope.item.id
                 title: $scope.item_title
                 details: $scope.item_details

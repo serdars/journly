@@ -3,16 +3,19 @@ class ItemsController < ApplicationController
   def index
     respond_to do |format|
       format.html { raise "Oops"}
-      format.json { render :json => Item.all }
+      format.json { render :json => Item.where({:plan_id => params[:plan_id]}) }
     end
   end
 
   # POST /items
   def create
+    @plan = Plan.find(params[:plan_id])
+
     prepare_tags
     prepare_item_elements
 
     @item = Item.create({
+                          :plan => @plan,
                           :title => params[:title],
                           :details => params[:details],
                           :tags => @tags,
@@ -27,11 +30,14 @@ class ItemsController < ApplicationController
 
   # POST /items/:id
   def update
+    @plan = Plan.find(params[:plan_id])
+
     prepare_tags
     prepare_item_elements
 
     @item = Item.find(params[:id])
     @item.update({
+                   :plan => @plan,
                    :title => params[:title],
                    :details => params[:details],
                    :tags => @tags,

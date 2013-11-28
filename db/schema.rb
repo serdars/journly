@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20131126080807) do
   create_table "items", force: true do |t|
     t.string   "title"
     t.text     "details"
+    t.integer  "plan_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

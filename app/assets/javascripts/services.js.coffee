@@ -103,13 +103,18 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
         }
 
         dataService = { }
+        dataService.items = { }
 
-        dataService.items = PlanItem.get {},
-            isArray: true
+        dataService.getItems = (planId) ->
+            items = PlanItem.get
+                plan_id: planId
+
+            dataService.items[planId] = items
+            dataService.items[planId]
 
         dataService.createItem = (params) ->
             PlanItem.save params, (item) ->
-                dataService.items.push item
+                dataService.items[params.plan_id].push item
             , () ->
                 console.log "Failed to CREATE"
 
@@ -126,7 +131,7 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
             item.$delete()
             .then () ->
                 # Delete succeeded
-                index = dataService.items.indexOf item
+                index = dataService.items[item.plan_id].indexOf item
                 dataService.items.splice index, 1
             , () ->
                 # Delete failed
