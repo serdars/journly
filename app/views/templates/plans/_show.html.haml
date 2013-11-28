@@ -1,4 +1,10 @@
 %header
+  .btn-group
+    %ul.nav.navbar-nav
+      %li
+        %a.item-action{"ui-sref" => 'plans', "eat-click" => "", "data-toggle" => "tooltip", "data-placement" => "top", "data-original-title" => "Go to plans"}
+          %i.fa.fa-suitcase.fa-lg
+          Plans
   %button.btn.btn-info.navbar-btn.navbar-right{"type" => "button", "ng-click" => "launchItemCreate()"}
     Add Plan Item
   %form.navbar-form.navbar-right{"role" => "search"}

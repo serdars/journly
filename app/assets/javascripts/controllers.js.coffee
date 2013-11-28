@@ -1,8 +1,8 @@
 xplanControllers = angular.module "xplanControllers", [ ]
 
-xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanData', 'angulargmContainer', '$stateParams', ($scope, $rootScope, $timeout, XplanData, angulargmContainer, $stateParams) ->
+xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanItem', 'angulargmContainer', '$stateParams', ($scope, $rootScope, $timeout, XplanItem, angulargmContainer, $stateParams) ->
     $scope.plan_id = $stateParams.planId
-    $scope.items = XplanData.getItems $scope.plan_id
+    $scope.items = XplanItem.getItems $scope.plan_id
 
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create', $scope.plan_id
@@ -46,7 +46,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
     $scope.deleteItem = (event, item) ->
         event.stopPropagation()
         if confirm("Are you sure you want to delete this item?")
-            XplanData.deleteItem item
+            XplanItem.deleteItem item
 
     $scope.editItem = (event, item) ->
         event.stopPropagation()
@@ -185,7 +185,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
 
 ]
 
-xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanData',  ($scope, $rootScope, $timeout, XplanData) ->
+xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanItem',  ($scope, $rootScope, $timeout, XplanItem) ->
     initModal = () ->
         $scope.alerts = [ ]
         $scope.suggestions = [ ]
@@ -267,7 +267,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         addAlert "Added '" + value + "' as a bookmark..."
         $scope.processing_message = "Looking up " + value + " ..."
         $scope.suggestionCount += 1
-        XplanData.info
+        XplanItem.info
             type: "bookmark"
             key: value
         .then (response) ->
@@ -293,7 +293,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
     addLocation = (location) ->
         $scope.processing_message = "Looking up info for " + location.value + " ..."
         $scope.suggestionCount += 1
-        XplanData.info
+        XplanItem.info
             type: "google_place"
             key: location.reference
         .then (response) ->
@@ -319,7 +319,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         # Get tag suggestions
         suggestionQueryCount += 1
         queryNumber = suggestionQueryCount
-        XplanData.suggest
+        XplanItem.suggest
             term: term
             type: type
         .then (response) ->
@@ -381,7 +381,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         angular.forEach $scope.yelpInfos, (y) ->
             item_elements.push y
         if $scope.item == null
-            item = XplanData.createItem
+            item = XplanItem.createItem
                 plan_id: $scope.plan_id
                 title: $scope.item_title
                 details: $scope.item_details
@@ -390,7 +390,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             item.$promise.then () ->
                 $('#addItemModal').modal "hide"
         else
-            item = XplanData.editItem $scope.item,
+            item = XplanItem.editItem $scope.item,
                 plan_id: $scope.plan_id
                 id: $scope.item.id
                 title: $scope.item_title

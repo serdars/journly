@@ -2,7 +2,7 @@ xplanServices = angular.module "xplanServices", [ 'ngResource' ]
 
 xplanServices.factory 'XplanPlan', [ '$resource', '$http',
     ($resource, $http) ->
-        # This is mostly copy paste from XplanData
+        # This is mostly copy paste from XplanItem
         transform = (planData) ->
             planData
 
@@ -58,7 +58,7 @@ xplanServices.factory 'XplanPlan', [ '$resource', '$http',
         dataService
 ]
 
-xplanServices.factory 'XplanData', [ '$resource', '$http',
+xplanServices.factory 'XplanItem', [ '$resource', '$http',
     ($resource, $http) ->
         transform = (itemData) ->
             itemData.yelpInfos = [ ]
@@ -121,7 +121,21 @@ xplanServices.factory 'XplanData', [ '$resource', '$http',
         dataService.editItem = (item, params) ->
             PlanItem.save params, (newItem) ->
                 angular.forEach newItem, (value, key) ->
-                    if key.substring(0, 1) != "$"
+                    if key == "locations"
+                        # Locations require special attention unfotunately
+                        angular.forEach value, (updatedLocation) ->
+                            # For the original location
+                            originalLocation = null
+                            angular.forEach item.locations, (location) ->
+                                if location.id == updatedLocation.id
+                                    originalLocation = location
+                            if originalLocation == null
+                                item.locations.push updatedLocation
+                            else
+                                angular.forEach updatedLocation, (value, key) ->
+                                    if key.substring(0, 1) != "$"
+                                        originalLocation[key] = value
+                    else if key.substring(0, 1) != "$"
                         this[key] = value
                 , item
             , () ->
