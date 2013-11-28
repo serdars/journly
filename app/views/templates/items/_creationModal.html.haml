@@ -86,7 +86,11 @@
                 %i.fa.fa-spinner.fa-spin
               {{processing_message}}
             %suggestion-item{"ng-repeat" => "suggestion in suggestions", "on-select" => "suggested(suggestion)"}
-              {{ suggestion.message }}
+              %span.pull-left
+                %i{"class" => "fa {{suggestion.icon}} fa-2x"}
+              .suggestion-text.pull-left
+                {{ suggestion.message }}
+              .clearfix
       .modal-footer
         %button.btn.btn-primary{"type" => "button", "ng-click" => "submitItem()"}
           {{ buttonMessage() }}

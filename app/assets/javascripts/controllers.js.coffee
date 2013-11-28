@@ -333,9 +333,11 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                     suggestion.type = response.data.suggestion_type
                     suggestion.data = suggestion_data
                     if response.data.suggestion_type == "tag"
-                        suggestion.message = "Add tag: " + suggestion_data.name
+                        suggestion.icon = "fa-tag"
+                        suggestion.message = suggestion_data.name
                     else if response.data.suggestion_type == "google_place"
-                        suggestion.message = "Add location: " + suggestion_data.value
+                        suggestion.icon = "fa-location-arrow"
+                        suggestion.message = suggestion_data.value
                     else
                         console.log "Unknown type for suggestion: " + response.data.suggestion_type
                     $scope.suggestions.push suggestion
