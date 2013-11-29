@@ -88,3 +88,8 @@ body {
 .plan-summary {
     margin-left: 10px;
 }
+
+.item-creation-form {
+    max-height: 500px;
+    overflow-y: auto;
+}

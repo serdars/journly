@@ -146,7 +146,7 @@ xplanServices.factory 'XplanItem', [ '$resource', '$http',
             .then () ->
                 # Delete succeeded
                 index = dataService.items[item.plan_id].indexOf item
-                dataService.items.splice index, 1
+                dataService.items[item.plan_id].splice index, 1
             , () ->
                 # Delete failed
                 console.log "Failed to DELETE"

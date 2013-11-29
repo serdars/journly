@@ -6,7 +6,7 @@
           %i.fa.fa-times
         %h4.modal-title
           Add new item to your plan
-      .modal-body.row
+      .modal-body.row.item-creation-form
         #item-entry.col-md-8
           %input#magic.form-control{"type" => "text", "placeholder" => "Magic Box", "ng-model" => "magicValue", "ng-change" => "magicInput()"}
           %hr
@@ -62,23 +62,31 @@
             .list-group-item
               %p
                 %i.fa.fa-magic.fa-3x.pull-left.fa-border
-                Magic Box makes saving information about your travels as easy as a pie... Here are a few things it can do for you:
+                Magic Box makes saving information about your travels as easy as a pie.
                 .clearfix
               %p
-                %i.fa.fa-retweet.fa-3x.pull-left.fa-border
-                Recommends you places and tags...
+                %i.fa.fa-location-arrow.fa-3x.pull-left.fa-border
+                Recommends you places.
                 %br
                 %b
-                  Try:
-                Type anything in it (# for tags, @ for places)
+                  Try: 
+                '@pike place'
                 .clearfix
               %p
-                %i.fa.fa-search-plus.fa-3x.pull-left.fa-border
-                Saves the webpages you want to capture in your plans and searches them for important information.
+                %i.fa.fa-tag.fa-3x.pull-left.fa-border
+                Use tags to organize your plans.
                 %br
                 %b
-                  Try:
-                Pasting any link for magic try something from Yelp...
+                  Try: 
+                '#food'
+                .clearfix
+              %p
+                %i.fa.fa-bookmark.fa-3x.pull-left.fa-border
+                Saves your links and extracts important information from them.
+                %br
+                  %b
+                    Try: 
+                  Paste any url
                 .clearfix
           %suggestion-list
             .list-group-item{"ng-show" => "suggestionCount > 0"}
