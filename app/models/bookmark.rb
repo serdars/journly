@@ -64,7 +64,16 @@ class Bookmark
       return title
     end
 
-    source.match(/<title>(.*)<\/title>/)[1]
+    if source
+      title_match = source.match(/<title>(.*)<\/title>/)
+      if title_match
+        title_match[1]
+      else
+        nil
+      end
+    end
+
+    nil
   end
 
 end

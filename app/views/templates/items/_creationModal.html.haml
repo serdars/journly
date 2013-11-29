@@ -37,19 +37,23 @@
               %li
                 %a{"href" => "{{location.url}}", "target" => "_blank"}
                   Website
-          .yelp-info.well.well-sm{"ng-repeat" => "yelpInfo in yelpInfos"}
+          .yelp-info.well.well-sm{"ng-repeat" => "yelp_info in yelpInfos"}
             %button.close{"type" => "button", "aria-hidden" => "true", "ng-click" => "removeYelpInfo(yelpInfo)"}
               %i.fa.fa-times
-            %h4
-              {{yelpInfo.name}}
-            %ul.list-unstyled
-              %li
-                Rating: {{yelpInfo.rating}} from {{yelpInfo.review_count}} reviews
-              %li
-                {{yelpInfo.phone}}
-              %li
-                %a{"href" => "{{yelpInfo.url}}", "target" => "_blank"}
-                  Check it out on Yelp
+            .yelp-logo.pull-left
+              %img{"src" => "/assets/yelp-logo.png", "width" => "50", "height" => "30"}
+            .yelp-summary.pull-left
+              %b
+                {{yelp_info.name}}
+              %br
+              %img{"ng-src" => "{{yelp_info.rating_img_url}}"}
+              {{yelp_info.review_count}} Reviews
+              %br
+              {{yelp_info.phone}}
+              %br
+              %a{"href" => "{{yelp_info.url}}", "target" => "_blank"}
+                More info on Yelp
+            .clearfix
           .clearfix
         #magic-actions.col-md-4
           .alert.alert-info.alert-dismissable{"ng-repeat" => "alert in alerts"}

@@ -428,7 +428,7 @@ xplanControllers.controller "planListController", [ '$scope', '$rootScope', '$ti
             map.setOptions
                 center: new google.maps.LatLng(plan.destination.geometry.lat, plan.destination.geometry.lng)
                 draggable: false
-                mapTypeId: google.maps.MapTypeId.HYBRID
+                # mapTypeId: google.maps.MapTypeId.HYBRID
                 scrollwheel: false
                 disableDefaultUI: true
                 zoom: 10
