@@ -16,7 +16,7 @@
       .list-group
         .list-group-item{"ng-show" => "filterTerm != ''", "ng-cloak" => ""}
           Filtering {{items.length}} items with tag: {{filterTerm}}
-        .list-group-item{"ng-repeat" => "item in items | filter:filterByTag", "ng-mouseenter" => "highlightItem(item)", "ng-mouseleave" => "unhighlightItem(item)", "ng-click" => "selectItem(item)", "ng-class" => "{highlighted:item.highlighted || item.selected, selected:item.selected}", "ng-cloak" => "", "on-finish-render" => "initTooltips()"}
+        .list-group-item{"ng-repeat" => "item in items | filter:filterByTag", "ng-mouseenter" => "highlightItem(item)", "ng-mouseleave" => "unhighlightItem(item)", "ng-click" => "selectItem(item)", "ng-class" => "{highlighted:item.highlighted || item.selected, selected:item.selected}", "ng-cloak" => "", "on-finish-render" => "postRender()"}
           .actions-menu{"ng-show" => "item.highlighted || item.selected"}
             .btn-group
               %a.btn.btn-default.item-action{"href" => "#", "eat-click" => "", "ng-click" => "editItem($event, item)", "ng-show" => "item.locations.length == 0", "data-toggle" => "tooltip", "data-placement" => "top", "data-original-title" => "No location... Add one..."}
@@ -51,6 +51,12 @@
                   %a{"href" => "{{yelp_info.url}}", "target" => "_blank"}
                     More info on Yelp
                 .clearfix
+            %li{"ng-show" => "item.locations.length > 0"}
+              .bookmark-summary{"ng-repeat" => "location in item.locations"}
+                %span
+                  %i.fa.fa-location-arrow
+                %a{"href" => "{{getDirectionsLink(location)}}", "target" => "_blank"}
+                  Get directions to {{location.name}}
             %li{"ng-show" => "item.bookmarks.length > 0"}
               .bookmark-summary{"ng-repeat" => "bookmark in item.bookmarks"}
                 %a{"href" => "{{bookmark.name}}", "target" => "_blank"}

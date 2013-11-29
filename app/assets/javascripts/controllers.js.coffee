@@ -7,41 +7,42 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create', $scope.plan_id
 
-    $('input.filter-search').typeahead
-        name: 'tags'
-        remote:
-            url: '/suggest?type=tag&term=%QUERY'
-            filter: (parsedResponse) ->
-                tagData = [ ]
-                angular.forEach parsedResponse.suggestions, (tag) ->
-                    if tag.id && tag.name
+    initFilterSearch = () ->
+        $('input.filter-search').typeahead
+            name: 'tags'
+            remote:
+                url: '/suggest?type=tag&term=%QUERY'
+                filter: (parsedResponse) ->
+                    tagData = [ ]
+                    angular.forEach parsedResponse.suggestions, (tag) ->
+                        if tag.id && tag.name
+                            tagData.push
+                                value: tag.name
+                                tokens: tag.name.split(" ")
+
+                    if tagData.length == 0
                         tagData.push
-                            value: tag.name
-                            tokens: tag.name.split(" ")
+                            value: "No tags..."
+                            tokens: [ ]
+                    tagData
 
-                if tagData.length == 0
-                    tagData.push
-                        value: "No tags..."
-                        tokens: [ ]
-                tagData
-
-    $('input.filter-search').on "typeahead:selected", (event, tag) ->
-        if tag.value != "No tags..."
-            $rootScope.$broadcast 'filter.term', tag.value
-        else
-            $rootScope.$broadcast 'filter.term', ""
-
-    filterTimer = null
-    debounce = (fn, delay) ->
-        if filterTimer != null
-            $timeout.cancel timer
-        filterTimer = $timeout fn, delay
-
-    $('input.filter-search').keydown () ->
-        debounce () ->
-            if $('input.filter-search').val() == ""
+        $('input.filter-search').on "typeahead:selected", (event, tag) ->
+            if tag.value != "No tags..."
+                $rootScope.$broadcast 'filter.term', tag.value
+            else
                 $rootScope.$broadcast 'filter.term', ""
-        , 100
+
+        filterTimer = null
+        debounce = (fn, delay) ->
+            if filterTimer != null
+                $timeout.cancel timer
+            filterTimer = $timeout fn, delay
+
+        $('input.filter-search').keydown () ->
+            debounce () ->
+                if $('input.filter-search').val() == ""
+                    $rootScope.$broadcast 'filter.term', ""
+            , 100
 
     $scope.deleteItem = (event, item) ->
         event.stopPropagation()
@@ -66,6 +67,10 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
         else
             parts[2]
 
+    $scope.getDirectionsLink = (location) ->
+        param = location.address.split(" ").join("+")
+        "https://maps.google.com/maps?daddr=" + param
+        
     $scope.markerEvent = (event, itemId) ->
         item = null
         angular.forEach $scope.items, (i) ->
@@ -110,9 +115,13 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
 
         return
 
-    $scope.initTooltips = () ->
+    initTooltips = () ->
         $(".item-action").tooltip {container: "body"}
         return
+
+    $scope.postRender = () ->
+        initFilterSearch()
+        initTooltips()
 
     $scope.$on 'gmMarkersUpdated', (event, objects) ->
         latlngBounds = new google.maps.LatLngBounds
@@ -237,12 +246,14 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
 
     isUrl = (value) ->
         # http://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-an-url
-        pattern = new RegExp '^(https?:\\/\\/)?' +
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-            '((\\d{1,3}\\.){3}\\d{1,3}))' +
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-            '(\\?[;&a-z\\d%_.~+=-]*)?' +
-            '(\\#[-a-z\\d_]*)?$','i'
+        # pattern = new RegExp '^(https?:\\/\\/)?' +
+        #     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+        #     '((\\d{1,3}\\.){3}\\d{1,3}))' +
+        #     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+        #     '(\\?[;&a-z\\d%_.~+=-]*)?' +
+        #     '(\\#[-a-z\\d_]*)?$','i'
+        pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+            
         pattern.test value
 
     deleteElement = (array, element) ->
@@ -257,8 +268,8 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
 
     updateTitle = (title) ->
         if $scope.item_title == ""
-            $scope.item_title = info.name
-            addAlert "Added '" + info.name + "' as the title..."
+            $scope.item_title = title
+            addAlert "Added '" + title + "' as the title..."
 
     addBookmark = (value) ->
         $scope.bookmarks.push

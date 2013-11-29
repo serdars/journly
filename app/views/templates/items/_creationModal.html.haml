@@ -27,16 +27,21 @@
           .location.well.well-sm{"ng-repeat" => "location in locations"}
             %button.close{"type" => "button", "aria-hidden" => "true", "ng-click" => "removeLocation(location)"}
               %i.fa.fa-times
-            %h4
-              {{location.name}}
-            %ul.list-unstyled
-              %li
-                {{location.address}}
-              %li
-                {{location.phone_number}}
-              %li
-                %a{"href" => "{{location.url}}", "target" => "_blank"}
-                  Website
+            .location-logo.pull-left
+              %i.fa.fa-location-arrow.fa-3x.pull-left.fa-border
+            .location-summary.pull-left
+              %ul.list-unstyled
+                %li
+                  %b
+                    {{location.name}}
+                %li
+                  {{location.address}}
+                %li
+                  {{location.phone_number}}
+                %li
+                  %a{"href" => "{{location.url}}", "target" => "_blank"}
+                    Website
+            .clearfix
           .yelp-info.well.well-sm{"ng-repeat" => "yelp_info in yelpInfos"}
             %button.close{"type" => "button", "aria-hidden" => "true", "ng-click" => "removeYelpInfo(yelpInfo)"}
               %i.fa.fa-times
