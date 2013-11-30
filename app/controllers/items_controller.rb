@@ -63,7 +63,11 @@ class ItemsController < ApplicationController
   # GET /suggest
   def suggest
     suggestionClass = get_class(params[:type])
-    suggestions = suggestionClass.suggest(params[:term])
+    if suggestionClass == GooglePlace && params[:location_bias]
+      suggestions = suggestionClass.suggest(params[:term], {:location => params[:location_bias], :radius => 10000})
+    else
+      suggestions = suggestionClass.suggest(params[:term])
+    end
 
     respond_to do |format|
       format.html { raise "Oops"}

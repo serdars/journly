@@ -3,6 +3,7 @@ Xplan::Application.routes.draw do
   # Plans
   match 'plans' => 'plans#index', :via => :get
   match 'plans' => 'plans#create', :via => :post
+  match 'plans/:id' => 'plans#show', :via => :get
   match 'plans/:id' => 'plans#update', :via => :post
   match 'plans/:id' => 'plans#destroy', :via => :delete
 

@@ -20,15 +20,19 @@ xplanServices.factory 'XplanPlan', [ '$resource', '$http',
         Plan = $resource '/plans/:planId.json', {
             planId: '@id'
         }, {
-            get: {method:'GET', params:{planId:'@id'}, transformResponse:transformPlan, isArray:true},
+            get: {method:'GET', params:{planId:'@id'}, transformResponse:transformPlan},
+            query: {method:'GET', params:{planId:'@id'}, transformResponse:transformPlan, isArray:true},
             delete: {method:'DELETE', params:{planId:'@id'}}
             save: {method:'POST', params:{planId:'@id'}, transformResponse:transformPlan}
         }
 
         dataService = { }
 
-        dataService.plans = Plan.get {},
-            isArray: true
+        dataService.plans = Plan.query {}
+
+        dataService.getPlan = (planId) ->
+            Plan.get
+                planId: planId
 
         dataService.createPlan = (params) ->
             Plan.save params, (plan) ->
@@ -122,19 +126,36 @@ xplanServices.factory 'XplanItem', [ '$resource', '$http',
             PlanItem.save params, (newItem) ->
                 angular.forEach newItem, (value, key) ->
                     if key == "locations"
-                        # Locations require special attention unfotunately
-                        angular.forEach value, (updatedLocation) ->
-                            # For the original location
-                            originalLocation = null
-                            angular.forEach item.locations, (location) ->
-                                if location.id == updatedLocation.id
-                                    originalLocation = location
-                            if originalLocation == null
-                                item.locations.push updatedLocation
+                        # Locations require special attention unfortunately
+                        # And worse we are assuming they arrive sorted by id
+                        index = 0
+                        loop
+                            if value[index] && item.locations[index]
+                                if value[index].id > item.locations[index].id
+                                    # Original location is removed
+                                    item.locations.splice index, 1
+                                    # No need to bump up the index because we've deleted one element
+                                else if value[index].id == item.locations[index].id
+                                    # Original Element might be updated
+                                    angular.forEach value[index], (value, key) ->
+                                        if key.substring(0, 1) != "$"
+                                            item.locations[index][key] = value
+                                    index += 1
+                                else
+                                    # Means we've added a new location with a lower id. Shouldn't happen now
+                                    console.log "How come you add a location with a lower id... Raising eyebrow..."
+                                    index += 1
+                            else if item.locations[index]
+                                # We only have the original location. We need to remove it
+                                item.locations.splice index, 1
+                                # No need to bump up
+                            else if value[index]
+                                # We have a new location. We need to add it
+                                item.locations.push value[index]
+                                index += 1
                             else
-                                angular.forEach updatedLocation, (value, key) ->
-                                    if key.substring(0, 1) != "$"
-                                        originalLocation[key] = value
+                                # Nothing left. Let's exit
+                                break
                     else if key.substring(0, 1) != "$"
                         this[key] = value
                 , item

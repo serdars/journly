@@ -8,6 +8,16 @@ class PlansController < ApplicationController
     end
   end
 
+  # GET /plans
+  def show
+    @plan = Plan.find(params[:id])
+
+    respond_to do |format|
+      format.html { render }
+      format.json { render :json => @plan }
+    end
+  end
+
   # POST /plans
   def create
     @plan = Plan.create({

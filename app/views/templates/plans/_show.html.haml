@@ -16,6 +16,9 @@
       .list-group
         .list-group-item{"ng-show" => "filterTerm != ''", "ng-cloak" => ""}
           Filtering {{items.length}} items with tag: {{filterTerm}}
+        .list-group-item{"ng-show" => "items.length == 0 && !filterTerm"}
+          %button.btn.btn-info{"type" => "button", "ng-click" => "launchItemCreate()"}
+            Add First Plan Item
         .list-group-item{"ng-repeat" => "item in items | filter:filterByTag", "ng-mouseenter" => "highlightItem(item)", "ng-mouseleave" => "unhighlightItem(item)", "ng-click" => "selectItem(item)", "ng-class" => "{highlighted:item.highlighted || item.selected, selected:item.selected}", "ng-cloak" => "", "on-finish-render" => "postRender()"}
           .actions-menu{"ng-show" => "item.highlighted || item.selected"}
             .btn-group

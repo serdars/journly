@@ -1,11 +1,22 @@
 xplanControllers = angular.module "xplanControllers", [ ]
 
-xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanItem', 'angulargmContainer', '$stateParams', ($scope, $rootScope, $timeout, XplanItem, angulargmContainer, $stateParams) ->
+xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanItem', 'XplanPlan', 'angulargmContainer', '$stateParams', ($scope, $rootScope, $timeout, XplanItem, XplanPlan, angulargmContainer, $stateParams) ->
     $scope.plan_id = $stateParams.planId
+    $scope.plan = XplanPlan.getPlan($scope.plan_id)
+    $scope.plan.$promise.then () ->
+        locationExists = false
+        angular.forEach $scope.items, (item) ->
+            angular.forEach item.locations, (location) ->
+                locationExists = true
+        if !locationExists
+            $scope.map.setOptions
+                center: new google.maps.LatLng($scope.plan.destination.geometry.lat,$scope.plan.destination.geometry.lng)
+                zoom: 8
+                
     $scope.items = XplanItem.getItems $scope.plan_id
 
     $scope.launchItemCreate = () ->
-        $rootScope.$broadcast 'item.create', $scope.plan_id
+        $rootScope.$broadcast 'item.create', $scope.plan
 
     initFilterSearch = () ->
         $('input.filter-search').typeahead
@@ -51,7 +62,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
 
     $scope.editItem = (event, item) ->
         event.stopPropagation()
-        $rootScope.$broadcast 'item.edit', item, $scope.plan_id
+        $rootScope.$broadcast 'item.edit', item, $scope.plan
 
     getElementsByType = (item, type) ->
         elements = [ ]
@@ -124,12 +135,17 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
         initTooltips()
 
     $scope.$on 'gmMarkersUpdated', (event, objects) ->
+        locationExists = false
         latlngBounds = new google.maps.LatLngBounds
 
         angular.forEach $scope.items, (item) ->
             angular.forEach item.locations, (location) ->
+                locationExists = true
                 latlngBounds.extend new google.maps.LatLng(location.geometry.lat, location.geometry.lng)
-        $scope.map.fitBounds latlngBounds
+        if locationExists
+            $scope.map.fitBounds latlngBounds
+            if $scope.map.getZoom() > 14
+                $scope.map.setZoom 14
 
     $(".map-canvas").height ($(window).height() - 51)
     $(".list-canvas").css "max-height", ($(window).height() - 51)
@@ -196,6 +212,7 @@ xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$ti
 
 xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanItem',  ($scope, $rootScope, $timeout, XplanItem) ->
     initModal = () ->
+        $scope.dirty = false
         $scope.alerts = [ ]
         $scope.suggestions = [ ]
         $scope.suggestionCount = 0
@@ -225,16 +242,19 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         show: false
     $('#addItemModal').on "hidden.bs.modal", () ->
         initModal()
+    $("#addItemModal").on "hide.bs.modal", (event) ->
+        if $scope.dirty
+            confirm "Looks like you have some changes, are you sure you want to cancel your changes?"
 
-    $rootScope.$on "item.create", (event, planId) ->
+    $rootScope.$on "item.create", (event, plan) ->
         $scope.item = null
-        $scope.plan_id = planId
+        $scope.plan = plan
         initModal()
         $('#addItemModal').modal "show"
 
-    $rootScope.$on "item.edit", (event, item, planId) ->
+    $rootScope.$on "item.edit", (event, item, plan) ->
         $scope.item = item
-        $scope.plan_id = planId
+        $scope.plan = plan
         initModal()
         $('#addItemModal').modal "show"
 
@@ -245,15 +265,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         timer = $timeout fn, delay
 
     isUrl = (value) ->
-        # http://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-an-url
-        # pattern = new RegExp '^(https?:\\/\\/)?' +
-        #     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-        #     '((\\d{1,3}\\.){3}\\d{1,3}))' +
-        #     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-        #     '(\\?[;&a-z\\d%_.~+=-]*)?' +
-        #     '(\\#[-a-z\\d_]*)?$','i'
         pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-            
         pattern.test value
 
     deleteElement = (array, element) ->
@@ -272,6 +284,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             addAlert "Added '" + title + "' as the title..."
 
     addBookmark = (value) ->
+        $scope.dirty = true
         $scope.bookmarks.push
             element_type: "bookmark"
             name: value
@@ -292,16 +305,20 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                     updateTitle info.name
 
     $scope.removeBookmark = (value) ->
+        $scope.dirty = true
         deleteElement $scope.bookmarks, value
 
     addTag = (tag) ->
+        $scope.dirty = true
         addAlert "Added '" + tag.name + "' as a tag..."
         $scope.tags.push tag
 
     $scope.removeTag = (tag) ->
+        $scope.dirty = true
         deleteElement $scope.tags, tag
 
     addLocation = (location) ->
+        $scope.dirty = true
         $scope.processing_message = "Looking up info for " + location.value + " ..."
         $scope.suggestionCount += 1
         XplanItem.info
@@ -314,9 +331,11 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 addAlert "Added '" + info.name + "' as a location..."
 
     $scope.removeLocation = (value) ->
+        $scope.dirty = true
         deleteElement $scope.locations, value
 
     $scope.removeYelpInfo = (value) ->
+        $scope.dirty = true
         deleteElement $scope.yelpInfos, value
 
     resetSuggestions = () ->
@@ -330,9 +349,12 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
         # Get tag suggestions
         suggestionQueryCount += 1
         queryNumber = suggestionQueryCount
-        XplanItem.suggest
+        suggestionParams = 
             term: term
             type: type
+        if type == "google_place"
+            suggestionParams.location_bias = $scope.plan.destination.geometry.lat + "," + $scope.plan.destination.geometry.lng
+        XplanItem.suggest(suggestionParams)
         .then (response) ->
             $scope.suggestionCount -= 1
             # Since we are executing two queries we are
@@ -385,6 +407,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             addLocation suggestion.data
 
     $scope.submitItem = () ->
+        $scope.dirty = false
         # TODO: Need to do some validation here...
         item_elements = [ ]
         angular.forEach $scope.locations, (location) ->
@@ -395,7 +418,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
             item_elements.push y
         if $scope.item == null
             item = XplanItem.createItem
-                plan_id: $scope.plan_id
+                plan_id: $scope.plan.id
                 title: $scope.item_title
                 details: $scope.item_details
                 tags: $scope.tags
@@ -404,7 +427,7 @@ xplanControllers.controller "itemCreationController", [ '$scope', '$rootScope', 
                 $('#addItemModal').modal "hide"
         else
             item = XplanItem.editItem $scope.item,
-                plan_id: $scope.plan_id
+                plan_id: $scope.plan.id
                 id: $scope.item.id
                 title: $scope.item_title
                 details: $scope.item_details
