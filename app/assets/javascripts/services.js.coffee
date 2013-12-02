@@ -11,6 +11,9 @@ xplanServices.factory 'XplanSession', [ '$http', '$location', '$q', ($http, $loc
 
     sessionService.logout = () ->
         responsePromise = $http.delete 'users/sign_out.json'
+        responsePromise.success () ->
+            sessionService.currentUser = null
+        responsePromise
 
     sessionService.register = (email, password, password_confirmation) ->
         responsePromise = $http.post 'users.json',
@@ -20,8 +23,6 @@ xplanServices.factory 'XplanSession', [ '$http', '$location', '$q', ($http, $loc
                 password_confirmation: password_confirmation
         responsePromise.success (response) ->
             sessionService.currentUser = response
-        responsePromise.error (response) ->
-            console.log "Failed I Guess..."
         responsePromise
 
     sessionService.requestCurrentUser = () ->
@@ -33,6 +34,8 @@ xplanServices.factory 'XplanSession', [ '$http', '$location', '$q', ($http, $loc
                     sessionService.currentUser = response.data.user
                 else
                     sessionService.currentUser = null
+
+                sessionService.currentUser
 
     sessionService
 ]

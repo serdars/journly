@@ -2,7 +2,9 @@
   .navbar-header
     %a.navbar-brand{"ui-sref" => 'plans', "eat-click" => ""}
       X-Planner
-  %p.navbar-text.navbar-right
+  %p.navbar-text.navbar-right{"ng-show" => "user != null"}
+    Logged in as {{user.email}}
+    %br
     %a.navbar-link{"href" => "#", "eat-click" => "", "ng-click" => "logoutUser()"}
       Logout
   %span{"ng-transclude" => ""}

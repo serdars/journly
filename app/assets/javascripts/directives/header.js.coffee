@@ -7,6 +7,9 @@ headerDirective.directive 'header', [ 'XplanSession', '$state', (XplanSession, $
         scope: { }
         templateUrl: 'directives/header.html'
         controller: ($scope) ->
+            currentUser = XplanSession.requestCurrentUser().then (user) ->
+                $scope.user = user
+            
             $scope.logoutUser = () ->
                 XplanSession.logout().then () ->
                     $state.transitionTo "login"

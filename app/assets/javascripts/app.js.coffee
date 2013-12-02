@@ -21,25 +21,13 @@ xplanApp.config [ "$httpProvider", (provider) ->
 
 xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
     $urlRouterProvider.otherwise "/login"
-
-    # Check if the user is authorized in all pages
-    $urlRouterProvider.rule ($injector, $location) ->
-        XplanSession = $injector.get "XplanSession"
-        path = $location.path()
-        search = $location.search()
-        if path != '/login'
-            # TODO: user requestCurrentUser() instead.
-            # TODO: this is totally broken right now... Peace out...
-            if XplanSession.requestCurrentUser() != null
-                null
-            else
-                '/login?target=' + path
-        else
-            null
     
     $stateProvider
         .state 'login',
             url: "/login?target"
+            resolve:
+                currentUser: (XplanSession) ->
+                    XplanSession.requestCurrentUser()
             views:
                 main:
                     templateUrl: "login.html"
@@ -50,6 +38,10 @@ xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlR
                 main:
                     templateUrl: "plans/index.html"
                     controller: "planListController"
+                    resolve:
+                        currentUser: ['XplanSession', (XplanSession) ->
+                            XplanSession.requestCurrentUser()
+                        ]
                 creation:
                     templateUrl: 'plans/creationModal.html'
                     controller: "planCreationController"
@@ -59,6 +51,10 @@ xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlR
                 main:
                     templateUrl: "plans/show.html"
                     controller: "itemListController"
+                    resolve:
+                        currentUser: ['XplanSession', (XplanSession) ->
+                            XplanSession.requestCurrentUser()
+                        ]
                 creation:
                     templateUrl: 'items/creationModal.html'
                     controller: "itemCreationController"
