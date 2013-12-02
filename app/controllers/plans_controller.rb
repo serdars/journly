@@ -1,9 +1,17 @@
 class PlansController < ApplicationController
+  before_filter :authenticate_user!, :except => :home
+  # GET /home
+  def home
+    respond_to do |format|
+      format.html { render }
+      format.json { raise "Oops" }
+    end
+  end
+
   # GET /plans
   def index
     respond_to do |format|
-      # Only place where we are returning html
-      format.html { render }
+      format.html { raise "Oops" }
       format.json { render :json => Plan.all }
     end
   end
@@ -13,7 +21,7 @@ class PlansController < ApplicationController
     @plan = Plan.find(params[:id])
 
     respond_to do |format|
-      format.html { render }
+      format.html { raise "Oops" }
       format.json { render :json => @plan }
     end
   end
@@ -28,7 +36,7 @@ class PlansController < ApplicationController
                         })
 
     respond_to do |format|
-      format.html { raise "Oops"}
+      format.html { raise "Oops" }
       format.json { render :json => @plan }
     end
   end

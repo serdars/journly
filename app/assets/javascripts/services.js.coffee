@@ -1,5 +1,25 @@
 xplanServices = angular.module "xplanServices", [ 'ngResource' ]
 
+xplanServices.factory 'XplanSession', [ '$http', '$location', ($http, $location) ->
+    sessionService = { }
+
+    currentUser = null
+
+    isAuthenticated = () ->
+        !!currentUser
+
+    sessionService.login = (email, password) ->
+
+    sessionService.logout = () ->
+
+    sessionService.register = (email, password, confirmPassword) ->
+
+    sessionService.currentUser = () ->
+        null
+
+    sessionService
+]
+
 xplanServices.factory 'XplanPlan', [ '$resource', '$http',
     ($resource, $http) ->
         # This is mostly copy paste from XplanItem

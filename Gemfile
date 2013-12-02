@@ -29,5 +29,6 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'oauth'
 gem 'pry', :group => :development
+gem 'oauth'
+gem 'devise', "~> 3.2.2"

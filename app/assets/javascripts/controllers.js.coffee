@@ -1,5 +1,9 @@
 xplanControllers = angular.module "xplanControllers", [ ]
 
+xplanControllers.controller "loginController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', '$stateParams', ($scope, $rootScope, $timeout, XplanPlan, $stateParams) ->
+    # Nothing for now.
+]
+
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanItem', 'XplanPlan', 'angulargmContainer', '$stateParams', ($scope, $rootScope, $timeout, XplanItem, XplanPlan, angulargmContainer, $stateParams) ->
     $scope.plan_id = $stateParams.planId
     $scope.plan = XplanPlan.getPlan($scope.plan_id)

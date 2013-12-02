@@ -19,9 +19,29 @@ xplanApp.config [ "$httpProvider", (provider) ->
     provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr 'content'
 ]
 
-xplanApp.config ($stateProvider, $urlRouterProvider) ->
-    $urlRouterProvider.otherwise "/plans"
+xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
+    $urlRouterProvider.otherwise "/login"
+
+    # Check if the user is authorized in all pages
+    $urlRouterProvider.rule ($injector, $location) ->
+        XplanSession = $injector.get "XplanSession"
+        path = $location.path()
+        search = $location.search()
+        if path != '/login'
+            if XplanSession.currentUser() != null
+                null
+            else
+                '/login?target=' + path
+        else
+            null
+    
     $stateProvider
+        .state 'login',
+            url: "/login?target"
+            views:
+                main:
+                    templateUrl: "login.html"
+                    controller: "loginController"
         .state 'plans',
             url: "/plans"
             views:
@@ -40,6 +60,7 @@ xplanApp.config ($stateProvider, $urlRouterProvider) ->
                 creation:
                     templateUrl: 'items/creationModal.html'
                     controller: "itemCreationController"
+]
 
 xplanApp.controller "appController", ($scope) ->
     # Nothing for now.

@@ -1,0 +1,40 @@
+%header
+.main-view.login-views
+  %ul.nav.nav-tabs
+    %li.active
+      %a{"href" => "#loginTab", "data-toggle" => "tab"}
+        Existing Users
+    %li
+      %a{"href" => "#registerTab", "data-toggle" => "tab"}
+        New Users
+  .tab-content
+    #loginTab.tab-pane.fade.in.active
+      %form.form-horizontal{"role" => "form"}
+        .form-group
+          .col-sm-offset-1.col-sm-10
+            %input#loginEmail.form-control{"type" => "email", "placeholder" => "Email"}
+          .col-sm-1
+        .form-group
+          .col-sm-offset-1.col-sm-10
+            %input#loginEmail.form-control{"type" => "password", "placeholder" => "Password"}
+          .col-sm-1
+        .form-group.btn-center
+          %button.btn.btn-info{"type" => "submit"}
+            Sign in
+    #registerTab.tab-pane.fade
+      %form.form-horizontal{"role" => "form"}
+        .form-group
+          .col-sm-offset-1.col-sm-10
+            %input#loginEmail.form-control{"type" => "email", "placeholder" => "Email"}
+          .col-sm-1
+        .form-group
+          .col-sm-offset-1.col-sm-10
+            %input#loginEmail.form-control{"type" => "password", "placeholder" => "Password"}
+          .col-sm-1
+        .form-group
+          .col-sm-offset-1.col-sm-10
+            %input#loginEmail.form-control{"type" => "password", "placeholder" => "Confirm Password"}
+          .col-sm-1
+        .form-group.btn-center
+          %button.btn.btn-info{"type" => "submit"}
+            Register

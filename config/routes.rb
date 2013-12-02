@@ -1,5 +1,10 @@
 Xplan::Application.routes.draw do
-  root :to => "plans#index"
+  root :to => "plans#home"
+
+  # Users
+  devise_for :users
+  match 'home' => 'plans#home', :via => :get
+
   # Plans
   match 'plans' => 'plans#index', :via => :get
   match 'plans' => 'plans#create', :via => :post
