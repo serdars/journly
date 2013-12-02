@@ -25,16 +25,22 @@
       %form.form-horizontal{"role" => "form"}
         .form-group
           .col-sm-offset-1.col-sm-10
-            %input#loginEmail.form-control{"type" => "email", "placeholder" => "Email"}
+            %input.form-control{"type" => "email", "placeholder" => "Email", "ng-model" => "registerEmail"}
+            %span.help-block{"ng-repeat" => "error in errors.email"}
+              {{error}}
           .col-sm-1
         .form-group
           .col-sm-offset-1.col-sm-10
-            %input#loginEmail.form-control{"type" => "password", "placeholder" => "Password"}
+            %input.form-control{"type" => "password", "placeholder" => "Password", "ng-model" => "registerPassword"}
+            %span.help-block{"ng-repeat" => "error in errors.password"}
+              {{error}}
           .col-sm-1
         .form-group
           .col-sm-offset-1.col-sm-10
-            %input#loginEmail.form-control{"type" => "password", "placeholder" => "Confirm Password"}
+            %input.form-control{"type" => "password", "placeholder" => "Confirm Password", "ng-model" => "registerPasswordConfirmation"}
+            %span.help-block{"ng-repeat" => "error in errors.password_confirmation"}
+              {{error}}
           .col-sm-1
         .form-group.btn-center
-          %button.btn.btn-info{"type" => "submit"}
+          %button.btn.btn-info{"type" => "submit", 'ng-click' => 'registerUser()'}
             Register

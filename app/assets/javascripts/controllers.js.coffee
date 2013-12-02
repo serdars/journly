@@ -1,7 +1,20 @@
 xplanControllers = angular.module "xplanControllers", [ ]
 
-xplanControllers.controller "loginController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', '$stateParams', ($scope, $rootScope, $timeout, XplanPlan, $stateParams) ->
-    # Nothing for now.
+xplanControllers.controller "loginController", [ '$scope', '$rootScope', '$timeout', 'XplanSession', '$stateParams', ($scope, $rootScope, $timeout, XplanSession, $stateParams) ->
+    resetErrors = () ->
+        $scope.errors =
+            email: [ ]
+            password: [ ]
+            password_confirmation: [ ]
+    resetErrors()
+    
+    $scope.registerUser = () ->
+        resetErrors()
+        XplanSession.register($scope.registerEmail, $scope.registerPassword, $scope.registerPasswordConfirmation).success (response) ->
+            console.log "we will now redirect"
+        .error (response) ->
+            angular.forEach response.errors, (value, key) ->
+                $scope.errors[key].push key + " " + value[0]
 ]
 
 xplanControllers.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanItem', 'XplanPlan', 'angulargmContainer', '$stateParams', ($scope, $rootScope, $timeout, XplanItem, XplanPlan, angulargmContainer, $stateParams) ->

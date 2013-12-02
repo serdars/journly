@@ -28,7 +28,9 @@ xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlR
         path = $location.path()
         search = $location.search()
         if path != '/login'
-            if XplanSession.currentUser() != null
+            # TODO: user requestCurrentUser() instead.
+            # TODO: this is totally broken right now... Peace out...
+            if XplanSession.requestCurrentUser() != null
                 null
             else
                 '/login?target=' + path
@@ -62,8 +64,9 @@ xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlR
                     controller: "itemCreationController"
 ]
 
-xplanApp.controller "appController", ($scope) ->
-    # Nothing for now.
+xplanApp.controller "appController", [ '$scope', 'XplanSession', ($scope, XplanSession) ->
+    XplanSession.requestCurrentUser()
+]
 
 $(document).ready () ->
     script = document.createElement "script"

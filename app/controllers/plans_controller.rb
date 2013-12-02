@@ -1,12 +1,5 @@
 class PlansController < ApplicationController
-  before_filter :authenticate_user!, :except => :home
-  # GET /home
-  def home
-    respond_to do |format|
-      format.html { render }
-      format.json { raise "Oops" }
-    end
-  end
+  before_filter :authenticate_user!
 
   # GET /plans
   def index

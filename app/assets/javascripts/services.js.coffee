@@ -1,21 +1,38 @@
 xplanServices = angular.module "xplanServices", [ 'ngResource' ]
 
-xplanServices.factory 'XplanSession', [ '$http', '$location', ($http, $location) ->
+xplanServices.factory 'XplanSession', [ '$http', '$location', '$q', ($http, $location, $q) ->
     sessionService = { }
 
-    currentUser = null
-
-    isAuthenticated = () ->
-        !!currentUser
+    sessionService.currentUser = null
+    sessionService.isAuthenticated = () ->
+        !!sessionService.currentUser
 
     sessionService.login = (email, password) ->
 
     sessionService.logout = () ->
+        responsePromise = $http.delete 'users/sign_out.json'
 
-    sessionService.register = (email, password, confirmPassword) ->
+    sessionService.register = (email, password, password_confirmation) ->
+        responsePromise = $http.post 'users.json',
+            user:
+                email: email
+                password: password
+                password_confirmation: password_confirmation
+        responsePromise.success (response) ->
+            sessionService.currentUser = response
+        responsePromise.error (response) ->
+            console.log "Failed I Guess..."
+        responsePromise
 
-    sessionService.currentUser = () ->
-        null
+    sessionService.requestCurrentUser = () ->
+        if sessionService.isAuthenticated()
+            $q.when sessionService.currentUser
+        else
+            $http.get('/user.json').then (response) ->
+                if response.data.signed_in
+                    sessionService.currentUser = response.data.user
+                else
+                    sessionService.currentUser = null
 
     sessionService
 ]
