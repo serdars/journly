@@ -2,7 +2,7 @@ Xplan::Application.routes.draw do
   root :to => "users#home"
 
   # Users
-  devise_for :users, :controllers => { :registrations => "users/registrations"}
+  devise_for :users, :controllers => { :registrations => "users/registrations", :sessions => "users/sessions"}
   match 'home' => 'users#home', :via => :get
   match 'user' => 'users#user', :via => :get
 

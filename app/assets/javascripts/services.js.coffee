@@ -8,11 +8,21 @@ xplanServices.factory 'XplanSession', [ '$http', '$location', '$q', ($http, $loc
         !!sessionService.currentUser
 
     sessionService.login = (email, password) ->
+        responsePromise = $http.post 'users/sign_in.json',
+            user:
+                email: email
+                password: password
+                remember_me: true
+        responsePromise.success (response) ->
+            sessionService.currentUser = response.user
+            $http.defaults.headers.common['X-CSRF-Token'] = response.csrfToken
+        responsePromise
 
     sessionService.logout = () ->
         responsePromise = $http.delete 'users/sign_out.json'
-        responsePromise.success () ->
+        responsePromise.success (response) ->
             sessionService.currentUser = null
+            $http.defaults.headers.common['X-CSRF-Token'] = response.csrfToken
         responsePromise
 
     sessionService.register = (email, password, password_confirmation) ->
@@ -78,7 +88,7 @@ xplanServices.factory 'XplanPlan', [ '$resource', '$http',
             Plan.save params, (plan) ->
                 dataService.plans.push plan
             , () ->
-                console.log "Failed to CREATE"
+                console.log "TODO: Failed to CREATE"
 
         dataService.editPlan = (plan, params) ->
             Plan.save params, (newPlan) ->
@@ -87,7 +97,7 @@ xplanServices.factory 'XplanPlan', [ '$resource', '$http',
                         this[key] = value
                 , plan
             , () ->
-                console.log "Failed to EDIT"
+                console.log "TODO: Failed to EDIT"
 
         dataService.deletePlan = (plan) ->
             plan.$delete()
@@ -97,7 +107,7 @@ xplanServices.factory 'XplanPlan', [ '$resource', '$http',
                 dataService.plans.splice index, 1
             , () ->
                 # Delete failed
-                console.log "Failed to DELETE"
+                console.log "TODO: Failed to DELETE"
 
         dataService
 ]
@@ -160,7 +170,7 @@ xplanServices.factory 'XplanItem', [ '$resource', '$http',
             PlanItem.save params, (item) ->
                 dataService.items[params.plan_id].push item
             , () ->
-                console.log "Failed to CREATE"
+                console.log "TODO: Failed to CREATE"
 
         dataService.editItem = (item, params) ->
             PlanItem.save params, (newItem) ->
@@ -200,7 +210,7 @@ xplanServices.factory 'XplanItem', [ '$resource', '$http',
                         this[key] = value
                 , item
             , () ->
-                console.log "Failed to EDIT"
+                console.log "TODO: Failed to EDIT"
 
         dataService.deleteItem = (item) ->
             item.$delete()
@@ -210,7 +220,7 @@ xplanServices.factory 'XplanItem', [ '$resource', '$http',
                 dataService.items[item.plan_id].splice index, 1
             , () ->
                 # Delete failed
-                console.log "Failed to DELETE"
+                console.log "TODO: Failed to DELETE"
 
         dataService.suggest = (params) ->
             $http
