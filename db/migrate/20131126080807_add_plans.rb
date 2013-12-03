@@ -5,6 +5,7 @@ class AddPlans < ActiveRecord::Migration
       t.text :note
       t.string :destination_reference
       t.text :destination
+      t.belongs_to :user
       
       t.timestamps
     end

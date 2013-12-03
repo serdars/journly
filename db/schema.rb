@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20131130014435) do
     t.text     "note"
     t.string   "destination_reference"
     t.text     "destination"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -5,7 +5,7 @@ class PlansController < ApplicationController
   def index
     respond_to do |format|
       format.html { raise "Oops" }
-      format.json { render :json => Plan.all }
+      format.json { render :json => Plan.where({:user_id => current_user.id}) }
     end
   end
 
@@ -22,6 +22,7 @@ class PlansController < ApplicationController
   # POST /plans
   def create
     @plan = Plan.create({
+                          :user => current_user,
                           :name => params[:name],
                           :note => params[:note],
                           :destination_reference => params[:destination_reference],
