@@ -115,3 +115,43 @@ body {
 .btn-center {
     text-align: center;
 }
+
+.background {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.enlist-section {
+    position: absolute;
+    top: 45%;
+    left: 40%;
+}
+
+.logo-text {
+    position: absolute;
+    top: 15%;
+    left: 40%;
+    font-size: 8em;
+    color: #fff;
+}
+
+.logo-message {
+    position: absolute;
+    top: 35%;
+    left: 40%;
+    font-size: 2em;
+    color: #fff;
+}
+
+.logo-book {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    color: #fff;
+    font-size: 20em;
+    opacity: 0.75;
+}

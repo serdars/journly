@@ -20,9 +20,15 @@ xplanApp.config [ "$httpProvider", (provider) ->
 ]
 
 xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
-    $urlRouterProvider.otherwise "/login"
+    $urlRouterProvider.otherwise "/welcome"
     
     $stateProvider
+        .state 'welcome',
+            url: "/welcome"
+            views:
+                main:
+                    templateUrl: "welcome.html"
+                    controller: "welcomeController"
         .state 'login',
             url: "/login?target"
             resolve:
