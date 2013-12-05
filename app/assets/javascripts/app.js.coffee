@@ -23,6 +23,12 @@ xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlR
     $urlRouterProvider.otherwise "/welcome"
     
     $stateProvider
+        .state 'survey',
+            url: "/survey"
+            views:
+                main:
+                    templateUrl: "survey.html"
+                    controller: "surveyController"
         .state 'welcome',
             url: "/welcome"
             views:
