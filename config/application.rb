@@ -21,5 +21,8 @@ module Xplan
     # config.i18n.default_locale = :de
 
     config.autoload_paths += %W(#{config.root}/lib)
+
+    # Enable Font Awesome
+    config.assets.paths << Rails.root.join("vendor", "assets", "fonts")
   end
 end
