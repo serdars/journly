@@ -23,6 +23,6 @@ module Xplan
     config.autoload_paths += %W(#{config.root}/lib)
 
     # Enable Font Awesome
-    config.assets.paths << Rails.root.join("vendor", "assets", "fonts")
+    config.assets.paths << Rails.root.join("app", "assets", "fonts").to_s
   end
 end
