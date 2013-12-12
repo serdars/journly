@@ -16,3 +16,6 @@
 /tmp
 
 /config/config.yml
+/config/database.yml
+/vendor/bundle
+/database
