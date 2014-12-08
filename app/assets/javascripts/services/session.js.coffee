@@ -1,6 +1,6 @@
-xplanSessionService = angular.module "xplanSessionService", [ 'ngResource' ]
+journlySessionService = angular.module "journlySessionService", [ 'ngResource' ]
 
-xplanSessionService.factory 'XplanSession', [ '$http', '$location', '$q', '$rootScope', ($http, $location, $q, $rootScope) ->
+journlySessionService.factory 'JournlySession', [ '$http', '$location', '$q', '$rootScope', ($http, $location, $q, $rootScope) ->
     sessionService = { }
 
     sessionService.currentUser = null

@@ -1,6 +1,6 @@
-xplanWelcomeController = angular.module "xplanWelcomeController", [ ]
+journlyWelcomeController = angular.module "journlyWelcomeController", [ ]
 
-xplanWelcomeController.controller "welcomeController", [ '$scope', '$rootScope', '$timeout', '$state',  ($scope, $rootScope, $timeout, $state) ->
+journlyWelcomeController.controller "welcomeController", [ '$scope', '$rootScope', '$timeout', '$state',  ($scope, $rootScope, $timeout, $state) ->
     $scope.goToSurvey = () ->
         $state.transitionTo "survey"
 

@@ -1,12 +1,12 @@
-xplanApp = angular.module "xplanApp", [ 'xplanControllers', 'xplanServices', 'suggestionListDirective', 'xpTagDirective', 'headerDirective', 'AngularGM', 'ui.router' ]
+journlyApp = angular.module "journlyApp", [ 'journlyControllers', 'journlyServices', 'suggestionListDirective', 'xpTagDirective', 'headerDirective', 'AngularGM', 'ui.router' ]
 
 # Directive eat-click to do preventDefault() links when needed
-xplanApp.directive 'eatClick', () ->
+journlyApp.directive 'eatClick', () ->
     (scope, element, attrs) ->
         $(element).click (event) ->
             event.preventDefault();
 
-xplanApp.directive 'onFinishRender', ($timeout) ->
+journlyApp.directive 'onFinishRender', ($timeout) ->
     {
         restrict: 'A'
         link: (scope, element, attr) ->
@@ -15,11 +15,11 @@ xplanApp.directive 'onFinishRender', ($timeout) ->
     }
 
 # Make sure csrf tokens are included in AJAX calls            
-xplanApp.config [ "$httpProvider", (provider) ->
+journlyApp.config [ "$httpProvider", (provider) ->
     provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr 'content'
 ]
 
-xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
+journlyApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
     $urlRouterProvider.otherwise "/welcome"
     
     $stateProvider
@@ -38,8 +38,8 @@ xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlR
         .state 'login',
             url: "/login?target"
             resolve:
-                currentUser: (XplanSession) ->
-                    XplanSession.requestCurrentUser()
+                currentUser: (JournlySession) ->
+                    JournlySession.requestCurrentUser()
             views:
                 main:
                     templateUrl: "login.html"
@@ -51,8 +51,8 @@ xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlR
                     templateUrl: "plans/index.html"
                     controller: "planListController"
                     resolve:
-                        currentUser: ['XplanSession', (XplanSession) ->
-                            XplanSession.requestCurrentUser()
+                        currentUser: ['JournlySession', (JournlySession) ->
+                            JournlySession.requestCurrentUser()
                         ]
                 creation:
                     templateUrl: 'plans/creationModal.html'
@@ -64,16 +64,16 @@ xplanApp.config [ '$stateProvider', '$urlRouterProvider', ($stateProvider, $urlR
                     templateUrl: "plans/show.html"
                     controller: "itemListController"
                     resolve:
-                        currentUser: ['XplanSession', (XplanSession) ->
-                            XplanSession.requestCurrentUser()
+                        currentUser: ['JournlySession', (JournlySession) ->
+                            JournlySession.requestCurrentUser()
                         ]
                 creation:
                     templateUrl: 'items/creationModal.html'
                     controller: "itemCreationController"
 ]
 
-xplanApp.controller "appController", [ '$scope', 'XplanSession', ($scope, XplanSession) ->
-    XplanSession.requestCurrentUser()
+journlyApp.controller "appController", [ '$scope', 'JournlySession', ($scope, JournlySession) ->
+    JournlySession.requestCurrentUser()
 ]
 
 $(document).ready () ->
@@ -83,4 +83,4 @@ $(document).ready () ->
     document.body.appendChild script
 
 window.onGoogleReady = () ->
-    angular.bootstrap document, [ 'xplanApp' ]
+    angular.bootstrap document, [ 'journlyApp' ]

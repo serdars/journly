@@ -1,1 +1,1 @@
-xplanServices = angular.module "xplanServices", [ "xplanSessionService", "xplanPlanService", "xplanItemService" ]
+journlyServices = angular.module "journlyServices", [ "journlySessionService", "journlyPlanService", "journlyItemService" ]

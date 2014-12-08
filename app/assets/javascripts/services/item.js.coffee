@@ -1,6 +1,6 @@
-xplanItemService = angular.module "xplanItemService", [ 'ngResource' ]
+journlyItemService = angular.module "journlyItemService", [ 'ngResource' ]
 
-xplanItemService.factory 'XplanItem', [ '$resource', '$http', '$rootScope',
+journlyItemService.factory 'JournlyItem', [ '$resource', '$http', '$rootScope',
     ($resource, $http, $rootScope) ->
         transform = (itemData) ->
             itemData.yelpInfos = [ ]

@@ -1,8 +1,8 @@
-xplanPlanService = angular.module "xplanPlanService", [ 'ngResource' ]
+journlyPlanService = angular.module "journlyPlanService", [ 'ngResource' ]
 
-xplanPlanService.factory 'XplanPlan', [ '$resource', '$http', '$rootScope',
+journlyPlanService.factory 'JournlyPlan', [ '$resource', '$http', '$rootScope',
     ($resource, $http, $rootScope) ->
-        # This is mostly copy paste from XplanItem
+        # This is mostly copy paste from JournlyItem
         transform = (planData) ->
             planData
 

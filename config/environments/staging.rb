@@ -1,4 +1,4 @@
-Xplan::Application.configure do
+Journly::Application.configure do
   #
   # Staging is the same with production.
   #

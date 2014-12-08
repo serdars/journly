@@ -1,6 +1,6 @@
-xplanItemCreationController = angular.module "xplanItemCreationController", [ ]
+journlyItemCreationController = angular.module "journlyItemCreationController", [ ]
 
-xplanItemCreationController.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanItem',  ($scope, $rootScope, $timeout, XplanItem) ->
+journlyItemCreationController.controller "itemCreationController", [ '$scope', '$rootScope', '$timeout', 'JournlyItem',  ($scope, $rootScope, $timeout, JournlyItem) ->
     initModal = () ->
         $scope.dirty = false
         $scope.alerts = [ ]
@@ -81,7 +81,7 @@ xplanItemCreationController.controller "itemCreationController", [ '$scope', '$r
         addAlert "Added '" + value + "' as a bookmark..."
         $scope.processing_message = "Looking up " + value + " ..."
         $scope.suggestionCount += 1
-        XplanItem.info
+        JournlyItem.info
             type: "bookmark"
             key: value
         .then (response) ->
@@ -111,7 +111,7 @@ xplanItemCreationController.controller "itemCreationController", [ '$scope', '$r
         $scope.dirty = true
         $scope.processing_message = "Looking up info for " + location.value + " ..."
         $scope.suggestionCount += 1
-        XplanItem.info
+        JournlyItem.info
             type: "google_place"
             key: location.reference
         .then (response) ->
@@ -144,7 +144,7 @@ xplanItemCreationController.controller "itemCreationController", [ '$scope', '$r
             type: type
         if type == "google_place"
             suggestionParams.location_bias = $scope.plan.destination.geometry.lat + "," + $scope.plan.destination.geometry.lng
-        XplanItem.suggest(suggestionParams)
+        JournlyItem.suggest(suggestionParams)
         .then (response) ->
             $scope.suggestionCount -= 1
             # Since we are executing two queries we are
@@ -207,7 +207,7 @@ xplanItemCreationController.controller "itemCreationController", [ '$scope', '$r
         angular.forEach $scope.yelpInfos, (y) ->
             item_elements.push y
         if $scope.item == null
-            item = XplanItem.createItem
+            item = JournlyItem.createItem
                 plan_id: $scope.plan.id
                 title: $scope.item_title
                 details: $scope.item_details
@@ -216,7 +216,7 @@ xplanItemCreationController.controller "itemCreationController", [ '$scope', '$r
             item.$promise.then () ->
                 $('#addItemModal').modal "hide"
         else
-            item = XplanItem.editItem $scope.item,
+            item = JournlyItem.editItem $scope.item,
                 plan_id: $scope.plan.id
                 id: $scope.item.id
                 title: $scope.item_title

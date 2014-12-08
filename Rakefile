@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Xplan::Application.load_tasks
+Journly::Application.load_tasks

@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Xplan::Application.config.secret_key_base = '7055f60563c8f3d265eb75094076d90606366d11a38956ae142ed16ecb8f460912d74ad805739b02456e8b977e25487eb38c3596848a1faaf774fdf2b12ad8f0'
+Journly::Application.config.secret_key_base = '7055f60563c8f3d265eb75094076d90606366d11a38956ae142ed16ecb8f460912d74ad805739b02456e8b977e25487eb38c3596848a1faaf774fdf2b12ad8f0'

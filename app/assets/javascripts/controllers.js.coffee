@@ -1,1 +1,1 @@
-xplanControllers = angular.module "xplanControllers", [ 'xplanLoginController', 'xplanItemListController', 'xplanItemCreationController', 'xplanPlanListController', 'xplanPlanCreationController', 'xplanWelcomeController', 'xplanSurveyController' ]
+journlyControllers = angular.module "journlyControllers", [ 'journlyLoginController', 'journlyItemListController', 'journlyItemCreationController', 'journlyPlanListController', 'journlyPlanCreationController', 'journlyWelcomeController', 'journlySurveyController' ]

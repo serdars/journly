@@ -1,17 +1,17 @@
 headerDirective = angular.module 'headerDirective', [ ]
 
-headerDirective.directive 'header', [ 'XplanSession', '$state', (XplanSession, $state) ->
+headerDirective.directive 'header', [ 'JournlySession', '$state', (JournlySession, $state) ->
     {
         restrict: 'E'
         transclude: true
         scope: { }
         templateUrl: 'directives/header.html'
         controller: ($scope) ->
-            currentUser = XplanSession.requestCurrentUser().then (user) ->
+            currentUser = JournlySession.requestCurrentUser().then (user) ->
                 $scope.user = user
             
             $scope.logoutUser = () ->
-                XplanSession.logout().then () ->
+                JournlySession.logout().then () ->
                     $state.transitionTo "login"
                 , () ->
                     alert "We can not log you out on this computer right now. Please try again in a few moments."

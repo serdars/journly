@@ -1,4 +1,4 @@
-Xplan::Application.routes.draw do
+Journly::Application.routes.draw do
   root :to => "users#home"
 
   # Users

@@ -1,12 +1,12 @@
-xplanItemListController = angular.module "xplanItemListController", [ ]
+journlyItemListController = angular.module "journlyItemListController", [ ]
 
-xplanItemListController.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'XplanItem', 'XplanPlan', 'angulargmContainer', '$stateParams', 'currentUser', '$state', ($scope, $rootScope, $timeout, XplanItem, XplanPlan, angulargmContainer, $stateParams, currentUser, $state) ->
+journlyItemListController.controller "itemListController", [ '$scope', '$rootScope', '$timeout', 'JournlyItem', 'JournlyPlan', 'angulargmContainer', '$stateParams', 'currentUser', '$state', ($scope, $rootScope, $timeout, JournlyItem, JournlyPlan, angulargmContainer, $stateParams, currentUser, $state) ->
     if currentUser == null
         $state.transitionTo "login",
             target: "plan/" + $stateParams.planId
 
     $scope.plan_id = $stateParams.planId
-    $scope.plan = XplanPlan.getPlan($scope.plan_id)
+    $scope.plan = JournlyPlan.getPlan($scope.plan_id)
     $scope.plan.$promise.then () ->
         locationExists = false
         angular.forEach $scope.items, (item) ->
@@ -17,7 +17,7 @@ xplanItemListController.controller "itemListController", [ '$scope', '$rootScope
                 center: new google.maps.LatLng($scope.plan.destination.geometry.lat,$scope.plan.destination.geometry.lng)
                 zoom: 8
                 
-    $scope.items = XplanItem.getItems $scope.plan_id
+    $scope.items = JournlyItem.getItems $scope.plan_id
 
     $scope.launchItemCreate = () ->
         $rootScope.$broadcast 'item.create', $scope.plan
@@ -62,7 +62,7 @@ xplanItemListController.controller "itemListController", [ '$scope', '$rootScope
     $scope.deleteItem = (event, item) ->
         event.stopPropagation()
         if confirm("Are you sure you want to delete this item?")
-            XplanItem.deleteItem item
+            JournlyItem.deleteItem item
 
     $scope.editItem = (event, item) ->
         event.stopPropagation()

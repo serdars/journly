@@ -1,6 +1,6 @@
-xplanPlanCreationController = angular.module "xplanPlanCreationController", [ ]
+journlyPlanCreationController = angular.module "journlyPlanCreationController", [ ]
 
-xplanPlanCreationController.controller "planCreationController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan',  ($scope, $rootScope, $timeout, XplanPlan) ->
+journlyPlanCreationController.controller "planCreationController", [ '$scope', '$rootScope', '$timeout', 'JournlyPlan',  ($scope, $rootScope, $timeout, JournlyPlan) ->
     initModal = () ->
         if $scope.plan != null
             $scope.plan_name = angular.copy $scope.plan.name
@@ -61,12 +61,12 @@ xplanPlanCreationController.controller "planCreationController", [ '$scope', '$r
     $scope.submitPlan = () ->
         # TODO: Need to do some validation here...
         if $scope.plan == null
-            plan = XplanPlan.createPlan
+            plan = JournlyPlan.createPlan
                 name: $scope.plan_name
                 note: $scope.plan_note
                 destination_reference: $scope.destinationReference
         else
-            plan = XplanPlan.editPlan $scope.plan,
+            plan = JournlyPlan.editPlan $scope.plan,
                 id: $scope.plan.id
                 name: $scope.plan_name
                 note: $scope.plan_note

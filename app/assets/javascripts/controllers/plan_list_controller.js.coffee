@@ -1,11 +1,11 @@
-xplanPlanListController = angular.module "xplanPlanListController", [ ]
+journlyPlanListController = angular.module "journlyPlanListController", [ ]
 
-xplanPlanListController.controller "planListController", [ '$scope', '$rootScope', '$timeout', 'XplanPlan', '$location', 'angulargmContainer', 'currentUser', '$state', ($scope, $rootScope, $timeout, XplanPlan, $location, angulargmContainer, currentUser, $state) ->
+journlyPlanListController.controller "planListController", [ '$scope', '$rootScope', '$timeout', 'JournlyPlan', '$location', 'angulargmContainer', 'currentUser', '$state', ($scope, $rootScope, $timeout, JournlyPlan, $location, angulargmContainer, currentUser, $state) ->
     if currentUser == null
         $state.transitionTo "login",
             target: "plans"
             
-    $scope.plans = XplanPlan.plans
+    $scope.plans = JournlyPlan.plans
 
     $scope.launchPlanCreate = () ->
         $rootScope.$broadcast 'plan.create'
@@ -43,7 +43,7 @@ xplanPlanListController.controller "planListController", [ '$scope', '$rootScope
     $scope.deletePlan = (event, plan) ->
         event.stopPropagation()
         if confirm("Are you sure you want to delete this plan?")
-            XplanPlan.deletePlan plan
+            JournlyPlan.deletePlan plan
 
     $scope.editPlan = (event, plan) ->
         event.stopPropagation()
