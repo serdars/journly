@@ -14,16 +14,17 @@ class Yelp
       :rating_img_url => biz_info["rating_img_url"]
     }
   end
-  
+
   def self.get_business_info(business_id)
-    if APP_CONFIG[:LOCAL_MODE]
+    local_mode = false
+    if local_mode
       return self.fetch_local_business_info
     end
-    
-    consumer_key = APP_CONFIG[:YELP_CONSUMER_KEY]
-    consumer_secret = APP_CONFIG[:YELP_CONSUMER_SECRET]
-    token = APP_CONFIG[:YELP_TOKEN]
-    token_secret = APP_CONFIG[:YELP_TOKEN_SECRET]
+
+    consumer_key = ENV["YELP_CONSUMER_KEY"]
+    consumer_secret = ENV["YELP_CONSUMER_SECRET"]
+    token = ENV["YELP_TOKEN"]
+    token_secret = ENV["YELP_TOKEN_SECRET"]
 
     api_host = 'api.yelp.com'
     path = "http://api.yelp.com/v2/business/#{business_id}"

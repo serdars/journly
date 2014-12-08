@@ -29,7 +29,7 @@ class GooglePlace
     # Add google api key
     Rails.logger.debug "Google Autocomplete Call with: #{parameters}"
 
-    parameters[:key] = APP_CONFIG[:GOOGLE_PLACES_API_KEY]
+    parameters[:key] = ENV["GOOGLE_API_KEY"]
     parameters[:sensor] = false
 
     # Make autocomplete request to GooglePlaces
@@ -48,7 +48,7 @@ class GooglePlace
     # Add google api key
     Rails.logger.debug "Google Place Detail Call with: #{parameters}"
 
-    parameters[:key] = APP_CONFIG[:GOOGLE_PLACES_API_KEY]
+    parameters[:key] = ENV["GOOGLE_API_KEY"]
     parameters[:sensor] = false
 
     # Make place_detail request to GooglePlaces
@@ -65,7 +65,8 @@ class GooglePlace
 
 
   def self.fetch_rest(uri)
-    if APP_CONFIG[:LOCAL_MODE]
+    local_mode = false
+    if local_mode
       return 200, fetch_local(uri)
     end
 
